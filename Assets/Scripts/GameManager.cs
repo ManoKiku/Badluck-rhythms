@@ -17,7 +17,11 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     public int currentScore = 0;
     [SerializeField]
-    private int _scorePerHit = 100;
+    private int _scorePerHit = 50;
+    [SerializeField]
+    private int _scorePerGoodHit = 100;
+    [SerializeField]
+    private int _scorePerPerfectHit = 300;
     [SerializeField]
     public int comboCount = 0;
     [SerializeField]
@@ -42,9 +46,24 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void NoteHit() {
-        Debug.Log("Hit in time!");
+    public void NormalHit() {
+        Debug.Log("Normal hit!");
         currentScore += (int)(_scorePerHit * (1 + comboCount / 100f));
+        NoteHit();
+    }
+
+    public void GoodHit() {
+        Debug.Log("Good hit!");
+        currentScore += (int)(_scorePerGoodHit * (1 + comboCount / 100f));
+        NoteHit();
+    }
+    public void PerfectHit() {
+        Debug.Log("Perfect hit!");
+         currentScore += (int)(_scorePerPerfectHit * (1 + comboCount / 100f));
+        NoteHit();
+    }
+
+    public void NoteHit() {
         ++comboCount;
         TextChange();
     }
