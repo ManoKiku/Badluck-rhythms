@@ -144,6 +144,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1f8f79ebc44741d40b4bc4a9f1879534, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  explosionParticle: {fileID: 585023887267649667, guid: f08abf37ffd9a6e47b875e28aee14dc5, type: 3}
   _keyPress: 115
   _canBePressed: 0
   _obtained: 0

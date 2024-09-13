@@ -46,3 +46,9 @@ TagManager:
   - name: Note
     uniqueID: 1456280557
     locked: 0
+  - name: Parical
+    uniqueID: 495319333
+    locked: 0
+  - name: UI
+    uniqueID: 3332902423
+    locked: 0

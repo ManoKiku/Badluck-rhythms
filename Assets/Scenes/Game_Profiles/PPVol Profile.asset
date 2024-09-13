@@ -26,13 +26,13 @@ MonoBehaviour:
     overrideState: 0
     value: {x: 0.5, y: 0.5}
   intensity:
-    overrideState: 0
-    value: 0
+    overrideState: 1
+    value: 0.742
   smoothness:
-    overrideState: 0
-    value: 0.2
+    overrideState: 1
+    value: 0.316
   roundness:
-    overrideState: 0
+    overrideState: 1
     value: 1
   rounded:
     overrideState: 0
@@ -67,8 +67,8 @@ MonoBehaviour:
     overrideState: 1
     value: 0.85
   softKnee:
-    overrideState: 0
-    value: 0.5
+    overrideState: 1
+    value: 0.719
   clamp:
     overrideState: 0
     value: 65472
@@ -164,7 +164,7 @@ MonoBehaviour:
     value: 0
   tint:
     overrideState: 1
-    value: 16
+    value: 87
   colorFilter:
     overrideState: 0
     value: {r: 1, g: 1, b: 1, a: 1}
@@ -1439,8 +1439,8 @@ MonoBehaviour:
     overrideState: 1
     value: 1
   intensity:
-    overrideState: 0
-    value: 0
+    overrideState: 1
+    value: 1.07
   color:
     overrideState: 0
     value: {r: 0, g: 0, b: 0, a: 1}

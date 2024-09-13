@@ -7,7 +7,9 @@ using UnityEngine;
 public class NoteObject : MonoBehaviour
 {
     [SerializeField]
-    private KeyCode _keyPress;
+    public GameObject explosionParticle;
+    [SerializeField]
+    public KeyCode _keyPress;
 
     [SerializeField]
     private bool _canBePressed = false;
@@ -20,11 +22,13 @@ public class NoteObject : MonoBehaviour
         if(Input.GetKeyDown(_keyPress)) {
             if(_canBePressed) {
                 _obtained = true;
+                GameObject buff = Instantiate(explosionParticle, transform.position, Quaternion.identity);
+                Destroy(buff, 1f);
                 Destroy(gameObject);
-                if(Math.Abs(transform.position.y - pianoPos) > .3f) {
+                if(Math.Abs(transform.position.y - pianoPos) > .36f) {
                     GameManager.instance.NormalHit();
                 }
-                else if(Math.Abs(transform.position.y - pianoPos) > .15f) {
+                else if(Math.Abs(transform.position.y - pianoPos) > .2f) {
                     GameManager.instance.GoodHit();
                 }
                 else {
