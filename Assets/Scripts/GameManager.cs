@@ -47,6 +47,8 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     public Text scoreText;
     [SerializeField]
+    public Text comboText;
+    [SerializeField]
     public Text hitText;
 
     [Space(50)]
@@ -75,10 +77,6 @@ public class GameManager : MonoBehaviour
                 _music.Play();
             }
         }
-        if(!_bs.isEnded) {
-            currentScore += (int)(Time.deltaTime * 1000f);
-            ScoreTextChange();
-        }
     }
 
     public void NormalHit() {
@@ -92,7 +90,7 @@ public class GameManager : MonoBehaviour
 
     public void GoodHit() {
         Debug.Log("Good hit!");
-        hitText.color = new Color(109, 147, 21, 255);
+        hitText.color = Color.blue;
         hitText.text = "GOOD";
         currentScore += (int)(_scorePerGoodHit * (1 + comboCount / 100f));
         ++_goodCount;
@@ -110,6 +108,7 @@ public class GameManager : MonoBehaviour
     public void NoteHit() {
         _vfx.PlayOneShot(_hit);
         ++comboCount;
+        ScoreTextChange();
         if(maxCombo < comboCount) {
             maxCombo = comboCount;
         }
@@ -125,7 +124,8 @@ public class GameManager : MonoBehaviour
     }
 
     private void ScoreTextChange() {
-        scoreText.text = "Score: " + currentScore + "\nCombo: " + comboCount;
+        scoreText.text = currentScore.ToString();
+        comboText.text = comboCount.ToString() + "x";
     }
 
     public void ShowResult() {
