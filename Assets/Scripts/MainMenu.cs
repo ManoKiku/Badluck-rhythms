@@ -14,36 +14,47 @@ public class MainMenu : MonoBehaviour
     public GameObject signInMenu;
 
     public TMP_Text username, password, passwordConfirm, email;
-    public static void ExitGame() {
+    public static void ExitGame()
+    {
         Application.Quit();
     }
 
-    public void ShowSettings() {
+    public void ShowSettings()
+    {
         settings.SetActive(true);
         mainMenu.SetActive(false);
     }
 
-    public void HideSettings() {
+    public void HideSettings()
+    {
         settings.SetActive(false);
         mainMenu.SetActive(true);
     }
 
-    public void ShowSignIn() {
+    public void ShowSignIn()
+    {
         signInMenu.SetActive(true);
         settings.SetActive(false);
     }
 
-    public void HideSignIn() {
+    public void HideSignIn()
+    {
         signInMenu.SetActive(false);
         settings.SetActive(true);
     }
 
-    public void SignIn() {
-        DataTable users = AppDataBase.GetTable("SELECT * FROM Users WHERE Username = '" + username.text + "'OR email = '" + email.text + "';");
-        if (users.Rows == null) {
+    public void SignIn()
+    {
+        DataTable dt = AppDataBase.GetTable("SELECT * FROM Users WHERE Username = '" + username.text + "' OR Email = '" + email.text + "';");
+        Debug.Log(dt.Rows.Count);
+        Debug.Log("SELECT * FROM Users WHERE Username = '" + username.text + "' OR Email = '" + email.text + "';");
+
+        if (dt.Rows.Count != 0)
+        {
             Debug.Log("Not register");
         }
-        else {
+        else
+        {
             Debug.Log("Register");
         }
     }

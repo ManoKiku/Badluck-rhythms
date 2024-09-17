@@ -56,6 +56,5 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "Rhythm-game.sln",
-    "dotnet.preferCSharpExtension": true
+    "dotnet.defaultSolution": "Rhythm-game.sln"
 }

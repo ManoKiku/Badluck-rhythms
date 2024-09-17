@@ -84,7 +84,6 @@ static class AppDataBase
         adapter.Dispose();
 
         CloseConnection();
-
         return DS.Tables[0];
     }
 }
