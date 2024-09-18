@@ -12,7 +12,7 @@ public class SettingsMenu : MonoBehaviour
     float musicVolume, vfxVolume;
     Resolution[] resolutions;
 
-    void Start()
+    void Awake()
     {
         resolutionDropdown.ClearOptions();
         List<string> options = new List<string>();

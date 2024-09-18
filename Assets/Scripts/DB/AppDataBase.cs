@@ -8,8 +8,8 @@ static class AppDataBase
 {
     private const string fileName = "db.bytes";
     private static string DBPath;
-    private static SqliteConnection connection;
-    private static SqliteCommand command;
+    public static SqliteConnection connection;
+    public static SqliteCommand command;
 
     static AppDataBase()
     {
@@ -41,7 +41,7 @@ static class AppDataBase
         File.WriteAllBytes(toPath, reader.bytes);
     }
 
-    private static void OpenConnection()
+    public static void OpenConnection()
     {
         connection = new SqliteConnection("Data Source=" + DBPath);
         command = new SqliteCommand(connection);
@@ -82,8 +82,10 @@ static class AppDataBase
         DataSet DS = new DataSet();
         adapter.Fill(DS);
         adapter.Dispose();
-
         CloseConnection();
-        return DS.Tables[0];
+        if(DS.Tables.Count > 0)
+            return DS.Tables[0];
+        else
+            return null;
     }
 }
