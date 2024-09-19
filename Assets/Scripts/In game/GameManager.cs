@@ -1,3 +1,5 @@
+using System;
+using System.IO;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
@@ -64,7 +66,9 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
+        Debug.Log(Application.streamingAssetsPath + PlayerPrefs.GetInt("Level"));
         instance = this;
+        LoadDataFromFile();
     }
 
     // Update is called once per frame
@@ -121,6 +125,7 @@ public class GameManager : MonoBehaviour
         _vfx.PlayOneShot(_miss);
         comboCount = 0;
         ++_missCount;
+        ScoreTextChange();
     }
 
     private void ScoreTextChange() {
@@ -132,5 +137,42 @@ public class GameManager : MonoBehaviour
         resultObject.gameObject.SetActive(true);
         resultScoreText.text = "Score: " + currentScore + "\nMax combo: " + maxCombo;
         resultHitText.text = "Perfect hits:" + _perfectCount + "\nGood hits:" + _goodCount + "\nNormal hits:" + _normalCount + "\nMisses:" + _missCount;
+    }
+
+    private string GetMusicPath()
+    {
+        return Application.streamingAssetsPath + "/"+ PlayerPrefs.GetInt("Level");
+    }
+
+    IEnumerator GetAudioFile()
+    {
+        WWW w = new WWW(GetMusicPath() + ".wav");
+        yield return w;
+
+        var ac = w.GetAudioClip();
+        _music.clip = ac;
+    }
+
+    public void SaveLevelToFile()
+    {
+        if (!File.Exists(GetMusicPath() + ".bytes"))
+        {
+            File.Create(GetMusicPath() + ".bytes");
+        }
+
+        var json = JsonUtility.ToJson(_bs);
+        File.WriteAllText(GetMusicPath()  + ".bytes", json);
+    }
+
+    public void LoadDataFromFile()
+    {
+        if (!File.Exists(GetMusicPath()  + ".bytes"))
+        {
+            //Debug.LogWarning($"File /"{ filePath}/ " not found!, this);
+            return;
+        }
+
+        var json = File.ReadAllText(GetMusicPath()  + ".bytes");
+        JsonUtility.FromJsonOverwrite(json, _bs);
     }
 }
