@@ -1,9 +1,5 @@
-using System;
 using System.IO;
 using System.Collections;
-using System.Collections.Generic;
-using UnityEditor;
-using UnityEditor.Timeline;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -64,11 +60,12 @@ public class GameManager : MonoBehaviour
     public static GameManager instance;
     public static KeyCode[] basicButtons = {KeyCode.S, KeyCode.D, KeyCode.F, KeyCode.J, KeyCode.K, KeyCode.L};
 
-    void Start()
+    void Awake()
     {
         Debug.Log(Application.streamingAssetsPath + PlayerPrefs.GetInt("Level"));
         instance = this;
         LoadDataFromFile();
+        StartCoroutine(GetAudioFile());
     }
 
     // Update is called once per frame
@@ -146,11 +143,10 @@ public class GameManager : MonoBehaviour
 
     IEnumerator GetAudioFile()
     {
-        WWW w = new WWW(GetMusicPath() + ".wav");
+        WWW w = new WWW(GetMusicPath() + ".mp3");
         yield return w;
 
-        var ac = w.GetAudioClip();
-        _music.clip = ac;
+        _music.clip = NAudioPlayer.FromMp3Data(w.bytes);
     }
 
     public void SaveLevelToFile()
@@ -174,5 +170,6 @@ public class GameManager : MonoBehaviour
 
         var json = File.ReadAllText(GetMusicPath()  + ".bytes");
         JsonUtility.FromJsonOverwrite(json, _bs);
+        Debug.Log(json);
     }
 }

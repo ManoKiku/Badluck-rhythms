@@ -809,7 +809,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _beatTempo: 0
   _speedMultipler: 1
-  note: {fileID: 0}
+  note: {fileID: 6328661707561119501, guid: 069b42ae00fb665468814963a8e6489a, type: 3}
   _hitTime: []
   _column: 
   _spawnColdown: 0

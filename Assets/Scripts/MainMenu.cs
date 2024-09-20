@@ -1,18 +1,11 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
-using System.Data;
-using Mono.Data.Sqlite;
-using System.IO;
+
 
 public class MainMenu : MonoBehaviour
 {
-    public GameObject settings;
-    public GameObject mainMenu;
-    public GameObject playMenu;
-    public GameObject signInMenu;
+    public GameObject settings, mainMenu, playMenu, signInMenu, modMenu;
 
     public TMP_Text username, password, passwordConfirm, email;
     public Text Error;
@@ -46,6 +39,18 @@ public class MainMenu : MonoBehaviour
         mainMenu.SetActive(true);
     }
 
+    public void ShowModMenu()
+    {
+        modMenu.SetActive(true);
+        playMenu.SetActive(false);
+    }
+
+    public void HideModMenu()
+    {
+        modMenu.SetActive(false);
+        playMenu.SetActive(true);
+    }
+
     public void ShowSignIn()
     {
         signInMenu.SetActive(true);
@@ -56,6 +61,10 @@ public class MainMenu : MonoBehaviour
     {
         signInMenu.SetActive(false);
         settings.SetActive(true);
+    }
+
+    public void SetMod(bool setMod, string modName) {
+        PlayerPrefs.SetInt(modName, setMod ? 1 : 0);
     }
 
     public void SignIn()
@@ -85,10 +94,9 @@ public class MainMenu : MonoBehaviour
             return;
         }
 
-        string query = "SELECT * FROM Users WHERE Username = '111' OR Email = '111'";
+        string query = $"SELECT * FROM Users WHERE Username = '{username.text.ToString()}' OR Email = '{email.text.ToString()}';";
         Debug.Log(query);
         string answer = AppDataBase.ExecuteQueryWithAnswer(query);
-
 
         Debug.Log(answer);
 
@@ -100,5 +108,6 @@ public class MainMenu : MonoBehaviour
         {
             Debug.Log("Register");
         }
+        Error.text = "";
     }
 }
