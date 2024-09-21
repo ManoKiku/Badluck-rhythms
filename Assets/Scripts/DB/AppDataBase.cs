@@ -68,7 +68,6 @@ static class AppDataBase
         command.CommandText = query;
         var answer = command.ExecuteScalar();
         CloseConnection();
-        Debug.Log(answer.ToString());
         if (answer != null) return answer.ToString();
         else return null;
     }

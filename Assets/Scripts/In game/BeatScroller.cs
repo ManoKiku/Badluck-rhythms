@@ -17,37 +17,35 @@ public class BeatScroller : MonoBehaviour
     private List<float> _hitTime;
     [SerializeField]
     private List<notesSelect> _column;
-    [SerializeField]
-    private float _spawnColdown;
 
     [SerializeField]
-    public bool isStarted = false, isEnded = false;
+    public bool isStarted = false, isEnded = false, isSpeed = false;
 
     [SerializeField]
-    private float _timer;
-
-    [SerializeField]
-    private int _noteCount = 0;
+    static public float timer;
 
     void Start() {
+        timer = 0;
         _beatTempo /= 60f;
-        _spawnColdown = (6 - NoteObject.pianoPos) / (_beatTempo * _speedMultipler);
+        isSpeed = PlayerPrefs.GetInt("Speed") != 0;
+        if(isSpeed)
+            _speedMultipler *= 1.5f;
+        for(int i = 0; i < _hitTime.Count; ++i) {
+            if(isSpeed) 
+                _hitTime[i] /= 1.5f;
+            NoteObject buff = Instantiate(note, new Vector3(-5 + (int)_column[i] * 2, NoteObject.pianoPos + _beatTempo * _speedMultipler * _hitTime[i], 0), Quaternion.identity);
+            buff._keyPress = GameManager.basicButtons[(int)_column[i]];
+            buff.transform.SetParent(this.transform);
+            buff.hitTime = _hitTime[i];
+        }
         Debug.Log("Current note count: " + _hitTime.Count);
     }
 
     void Update() {
-        if(_hitTime.Count != _noteCount) {
-            if(_hitTime[_noteCount] <= _timer + _spawnColdown)  {
-                NoteObject buff = Instantiate(note, new Vector3(-5 + (int)_column[_noteCount] * 2, 6, 0), Quaternion.identity);
-                buff._keyPress = GameManager.basicButtons[(int)_column[_noteCount]];
-                buff.transform.SetParent(this.transform);
-                ++_noteCount;
-            }
-        }
         if(isStarted && !isEnded) {
-            _timer += Time.deltaTime;
+            timer += Time.deltaTime;
             transform.position -= new Vector3(0f, _beatTempo * _speedMultipler * Time.deltaTime , 0f);
-            if(_hitTime[_hitTime.Count - 1] <= _timer - 3f) {
+            if(_hitTime[_hitTime.Count - 1] <= timer - 3f) {
                 isEnded = true;
                 GameManager.instance.ShowResult();
             }

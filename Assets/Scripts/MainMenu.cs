@@ -63,9 +63,6 @@ public class MainMenu : MonoBehaviour
         settings.SetActive(true);
     }
 
-    public void SetMod(bool setMod, string modName) {
-        PlayerPrefs.SetInt(modName, setMod ? 1 : 0);
-    }
 
     public void SignIn()
     {
@@ -94,7 +91,7 @@ public class MainMenu : MonoBehaviour
             return;
         }
 
-        string query = $"SELECT * FROM Users WHERE Username = '{username.text.ToString()}' OR Email = '{email.text.ToString()}';";
+        string query = $"SELECT * FROM Users WHERE Username = '{username.text}' OR Email = '{email.text}';".ToString();
         Debug.Log(query);
         string answer = AppDataBase.ExecuteQueryWithAnswer(query);
 

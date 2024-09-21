@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 
 public class NoteObject : MonoBehaviour
@@ -9,11 +10,15 @@ public class NoteObject : MonoBehaviour
     public KeyCode _keyPress;
 
     [SerializeField]
-    private bool _canBePressed = false;
-    [SerializeField]
-    private bool _obtained = false;
+    private bool _canBePressed = false, _obtained = false, _isFading = false;
     [SerializeField]
     public static float pianoPos = -3.5f;
+    [SerializeField]
+    public float hitTime;
+
+    private void Start() {
+        _isFading = PlayerPrefs.GetInt("Invisible") == 0;
+    }
 
     private void Update() {
         if(Input.GetKeyDown(_keyPress)) {
@@ -32,6 +37,20 @@ public class NoteObject : MonoBehaviour
                     GameManager.instance.PerfectHit();
                 }
             }
+        }
+        if(BeatScroller.timer >= hitTime - 0.6f && !_isFading) {
+            _isFading = true;
+            StartCoroutine(fadeOut());
+        }
+    }
+
+    IEnumerator fadeOut() 
+    {
+        for (float i = 0.5f; i >= 0; i -= Time.deltaTime)
+        {
+            // set color with i as alpha
+            GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, i * 2);
+            yield return null;
         }
     }
 

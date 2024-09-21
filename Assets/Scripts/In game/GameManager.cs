@@ -1,7 +1,7 @@
 using System.IO;
-using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -40,6 +40,8 @@ public class GameManager : MonoBehaviour
     private int maxCombo = 0;
     [SerializeField]
     public int comboCount = 0;
+    [SerializeField]
+    private float _modsMul = 1.0f;
 
     [Space(50)]
     [SerializeField]
@@ -65,7 +67,13 @@ public class GameManager : MonoBehaviour
         Debug.Log(Application.streamingAssetsPath + PlayerPrefs.GetInt("Level"));
         instance = this;
         LoadDataFromFile();
-        StartCoroutine(GetAudioFile());
+        GetAudioFile();
+        if(PlayerPrefs.GetInt("Speed") != 0) {
+            _music.pitch = 1.5f;
+            _modsMul += 0.13f;
+        }
+        if(PlayerPrefs.GetInt("Invisible") != 0)
+            _modsMul += 0.06f;
     }
 
     // Update is called once per frame
@@ -78,13 +86,16 @@ public class GameManager : MonoBehaviour
                 _music.Play();
             }
         }
+        if(Input.GetKeyDown(KeyCode.Escape)) {
+            OpenMainMenu();
+        }
     }
 
     public void NormalHit() {
         Debug.Log("Normal hit!");
         hitText.color = Color.yellow;
         hitText.text = "NORMAL";
-        currentScore += (int)(_scorePerHit * (1 + comboCount / 100f));
+        currentScore += (int)(_scorePerHit * (1 + comboCount / 100f) * _modsMul);
         ++_normalCount;
         NoteHit();
     }
@@ -93,7 +104,7 @@ public class GameManager : MonoBehaviour
         Debug.Log("Good hit!");
         hitText.color = Color.blue;
         hitText.text = "GOOD";
-        currentScore += (int)(_scorePerGoodHit * (1 + comboCount / 100f));
+        currentScore += (int)(_scorePerGoodHit * (1 + comboCount / 100f) * _modsMul);
         ++_goodCount;
         NoteHit();
     }
@@ -101,12 +112,13 @@ public class GameManager : MonoBehaviour
         Debug.Log("Perfect hit!");
         hitText.color = Color.green;
         hitText.text = "PERFECT";
-        currentScore += (int)(_scorePerPerfectHit * (1 + comboCount / 100f));
+        currentScore += (int)(_scorePerPerfectHit * (1 + comboCount / 100f) * _modsMul);
         ++_perfectCount;
         NoteHit();
     }
 
     public void NoteHit() {
+        _vfx.Stop();
         _vfx.PlayOneShot(_hit);
         ++comboCount;
         ScoreTextChange();
@@ -119,6 +131,7 @@ public class GameManager : MonoBehaviour
         Debug.Log("Missed!");
         hitText.color = Color.red;
         hitText.text = "MISS";
+        _vfx.Stop();
         _vfx.PlayOneShot(_miss);
         comboCount = 0;
         ++_missCount;
@@ -141,11 +154,9 @@ public class GameManager : MonoBehaviour
         return Application.streamingAssetsPath + "/"+ PlayerPrefs.GetInt("Level");
     }
 
-    IEnumerator GetAudioFile()
+    void GetAudioFile()
     {
         WWW w = new WWW(GetMusicPath() + ".mp3");
-        yield return w;
-
         _music.clip = NAudioPlayer.FromMp3Data(w.bytes);
     }
 
@@ -171,5 +182,9 @@ public class GameManager : MonoBehaviour
         var json = File.ReadAllText(GetMusicPath()  + ".bytes");
         JsonUtility.FromJsonOverwrite(json, _bs);
         Debug.Log(json);
+    }
+
+    public void OpenMainMenu() {
+        SceneManager.LoadScene("MainMenu");
     }
 }
