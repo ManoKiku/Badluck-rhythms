@@ -5,13 +5,25 @@ using UnityEngine.UI;
 
 public class SettingsMenu : MonoBehaviour
 {
+    public TMP_InputField logUsername, logPassword, username, password, passwordConfirm, email;
+    public Text signError, logError, usernameMenu;
+
     public TMP_Dropdown resolutionDropdown;
     public Slider musicSlider, vfxSlider;
     float musicVolume, vfxVolume;
     Resolution[] resolutions;
 
+    private static bool isFirstStartUp = true;
+
     void Awake()
     {
+        if(isFirstStartUp) {
+            Debug.Log("First!");
+            isFirstStartUp = false;
+        }
+        else {
+            Debug.Log("No!");
+        }
         resolutionDropdown.ClearOptions();
         List<string> options = new List<string>();
         resolutions = Screen.resolutions;
@@ -81,5 +93,85 @@ public class SettingsMenu : MonoBehaviour
             vfxSlider.value = PlayerPrefs.GetFloat("vfxPreference");
         else
             vfxSlider.value = PlayerPrefs.GetFloat("vfxcPreference");
+    }
+
+    public void LogIn()
+    {
+        logError.color = Color.red;
+
+        if(logUsername.text.Length < 1) {
+            logError.text = "The username field cannot be empty!";
+            return;
+        }
+        else if(logPassword.text.Length < 1) {
+            logError.text = "The password field cannot be empty!";
+            return;
+        }
+
+        string query = $"SELECT * FROM Users WHERE Username = '{logUsername.text}' AND Password = '{logPassword.text}';";
+        Debug.Log(query);
+        string answer = AppDataBase.ExecuteQueryWithAnswer(query);
+
+        Debug.Log(answer);
+
+        if (answer != null)
+        {
+            usernameMenu.text = logUsername.text;
+            logError.color = Color.green;
+            logError.text = "Successfully logged in!";
+            PlayerPrefs.SetString("Player", username.text);
+        }
+        else
+        {
+            logError.text = "Invalid login information entered!";
+        }
+    }
+
+    public void SignIn()
+    {
+        signError.color = Color.red;
+        if(username.text.Length < 1) {
+            signError.text = "The username field cannot be empty!";
+            return;
+        }
+        else if(password.text.Length < 1) {
+            signError.text = "The password field cannot be empty!";
+            return;
+        }
+        else if(passwordConfirm.text.Length < 1) {
+            signError.text = "The password confirm field cannot be empty!";
+            return;
+        }
+        else if (password.text.Length < 8) {
+            signError.text = "password must be at least 8 characters";
+            return;
+        }
+        else if(password.text != passwordConfirm.text) {
+            signError.text = "The Passwords must match!";
+            return;
+        }
+        else if(email.text.Length < 1) {
+            signError.text = "The email field cannot be empty!";
+            return;
+        }
+
+        string query = $"SELECT * FROM Users WHERE Username = '{username.text}' OR Email = '{email.text}';";
+        Debug.Log(query);
+        string answer = AppDataBase.ExecuteQueryWithAnswer(query);
+
+        Debug.Log(answer);
+
+        if (answer != null)
+        {
+            signError.text = "This username or email is already in use!";
+        }
+        else
+        {
+            usernameMenu.text = username.text;
+            signError.color = Color.green;
+            signError.text = "Successfully registered!";
+            AppDataBase.ExecuteQueryWithoutAnswer($"INSERT INTO Users (Username, Password, Email) VALUES ('{username.text}', '{password.text}', '{email.text}')");
+            PlayerPrefs.SetString("Player", username.text);
+        }
     }
 }

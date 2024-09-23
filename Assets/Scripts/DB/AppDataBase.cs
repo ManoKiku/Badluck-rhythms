@@ -3,7 +3,6 @@ using System.Data;
 using Mono.Data.Sqlite;
 using System.IO;
 
-
 static class AppDataBase
 {
     private const string fileName = "db.bytes";
