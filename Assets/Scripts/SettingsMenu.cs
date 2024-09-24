@@ -2,28 +2,49 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
+using System;
 
 public class SettingsMenu : MonoBehaviour
 {
-    public TMP_InputField logUsername, logPassword, username, password, passwordConfirm, email;
-    public Text signError, logError, usernameMenu;
+    [SerializeField]
+    private TMP_InputField logUsername, logPassword, username, password, passwordConfirm, email;
+    [SerializeField]
+    private Text signError, logError, usernameMenu, loginText, passwordText, loggedAsText;
+    [SerializeField]
+    private Button logInButton, logOutButton;
 
-    public TMP_Dropdown resolutionDropdown;
-    public Slider musicSlider, vfxSlider;
+    [SerializeField]
+    private TMP_Dropdown resolutionDropdown;
+    [SerializeField]
+    private Slider musicSlider, vfxSlider;
+    [SerializeField]
+    private Toggle rememberAccount, fullScreen;
     float musicVolume, vfxVolume;
     Resolution[] resolutions;
 
     private static bool isFirstStartUp = true;
+    public static string login = String.Empty;
 
     void Awake()
     {
+        rememberAccount.isOn = PlayerPrefs.GetInt("DoRemember") != 0;
         if(isFirstStartUp) {
             Debug.Log("First!");
             isFirstStartUp = false;
+            if(IsLogenIn() && rememberAccount.isOn) {
+                login = PlayerPrefs.GetString("Player");
+            }
+            else
+                PlayerPrefs.SetString("Player", String.Empty);
         }
-        else {
-            Debug.Log("No!");
+        
+        if(login != String.Empty) {
+            usernameMenu.text = login;
+            loggedAsText.text = "Logged as " + login;
+            LoggedMenu(false);
         }
+
+
         resolutionDropdown.ClearOptions();
         List<string> options = new List<string>();
         resolutions = Screen.resolutions;
@@ -41,6 +62,20 @@ public class SettingsMenu : MonoBehaviour
         resolutionDropdown.AddOptions(options);
         resolutionDropdown.RefreshShownValue();
         LoadSettings(currentResolutionIndex);
+    }
+
+    void LoggedMenu(bool isHide) {
+        logUsername.gameObject.SetActive(isHide);
+        logPassword.gameObject.SetActive(isHide);
+        logInButton.gameObject.SetActive(isHide);
+        loginText.gameObject.SetActive(isHide);
+        passwordText.gameObject.SetActive(isHide);
+        logOutButton.gameObject.SetActive(!isHide);
+        loggedAsText.gameObject.SetActive(!isHide);
+    }
+
+    bool IsLogenIn() {
+        return PlayerPrefs.HasKey("Player") && PlayerPrefs.GetString("Player") != String.Empty;
     }
 
     public void SetVolume(float volume)
@@ -81,8 +116,10 @@ public class SettingsMenu : MonoBehaviour
             resolutionDropdown.value = PlayerPrefs.GetInt("ResolutionPreference");
         else
             resolutionDropdown.value = currentResolutionIndex;
-        if (PlayerPrefs.HasKey("FullscreenPreference"))
+        if (PlayerPrefs.HasKey("FullscreenPreference")) {
             Screen.fullScreen = System.Convert.ToBoolean(PlayerPrefs.GetInt("FullscreenPreference"));
+            fullScreen.isOn = Screen.fullScreen;
+        }
         else
             Screen.fullScreen = true;
         if (PlayerPrefs.HasKey("MusicPreference"))
@@ -117,14 +154,29 @@ public class SettingsMenu : MonoBehaviour
         if (answer != null)
         {
             usernameMenu.text = logUsername.text;
+            login = logUsername.text;
+            LoggedMenu(false);
             logError.color = Color.green;
+            loggedAsText.text = "Logged as " + login;
             logError.text = "Successfully logged in!";
-            PlayerPrefs.SetString("Player", username.text);
+            PlayerPrefs.SetString("Player", logUsername.text);
+            Debug.Log(PlayerPrefs.GetString("Player"));
         }
         else
         {
             logError.text = "Invalid login information entered!";
         }
+    }
+
+    public void RememberUser(bool check) {
+        PlayerPrefs.SetInt("DoRemember", check ? 1 : 0);
+    }
+
+    public void LogOut() {
+        PlayerPrefs.SetString("Player", null);
+        LoggedMenu(true);
+        usernameMenu.text = "Guest";
+        login = null;
     }
 
     public void SignIn()
@@ -167,11 +219,9 @@ public class SettingsMenu : MonoBehaviour
         }
         else
         {
-            usernameMenu.text = username.text;
             signError.color = Color.green;
             signError.text = "Successfully registered!";
             AppDataBase.ExecuteQueryWithoutAnswer($"INSERT INTO Users (Username, Password, Email) VALUES ('{username.text}', '{password.text}', '{email.text}')");
-            PlayerPrefs.SetString("Player", username.text);
         }
     }
 }

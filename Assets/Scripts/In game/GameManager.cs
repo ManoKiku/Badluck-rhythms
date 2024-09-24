@@ -187,4 +187,8 @@ public class GameManager : MonoBehaviour
     public void OpenMainMenu() {
         SceneManager.LoadScene("MainMenu");
     }
+
+    public void UploadResult() {
+        AppDataBase.ExecuteQueryWithoutAnswer($"INSERT INTO Records VALUES ({PlayerPrefs.GetInt("Level")}, '{PlayerPrefs.GetString("Player")}', {currentScore}, {_perfectCount}, {_goodCount}, {_normalCount}, {_missCount})");
+    }
 }
