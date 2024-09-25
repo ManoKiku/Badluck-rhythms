@@ -24,8 +24,13 @@ public class LevelChoose : MonoBehaviour
         levelDifficulty.text = "Level difficulty: " + level["Difficulty"].ToString();
         levelDescription.text = level["Description"].ToString();
 
+        GameObject[] allObjects = GameObject.FindGameObjectsWithTag("score");
+        foreach(GameObject obj in allObjects) 
+            Destroy(obj);
+        
         int count = 0;
-        DataTable records = AppDataBase.GetTable($"SELECT Username, Score, Perfect, Good, Miss FROM Records WHERE id = {id} ORDER BY Score DESC");
+        DataTable records = AppDataBase.GetTable($"SELECT Username, Score, Perfect, Good, Okay, Miss FROM Records WHERE id = {id} ORDER BY Score DESC");
+
         foreach(DataRow rows in records.Rows) {
             Text buff = Instantiate(record, parentTransform);
             foreach(DataColumn col in records.Columns) {

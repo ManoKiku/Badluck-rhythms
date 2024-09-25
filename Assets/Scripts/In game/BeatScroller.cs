@@ -33,7 +33,7 @@ public class BeatScroller : MonoBehaviour
         for(int i = 0; i < _hitTime.Count; ++i) {
             if(isSpeed) 
                 _hitTime[i] /= 1.5f;
-            NoteObject buff = Instantiate(note, new Vector3(-5 + (int)_column[i] * 2, NoteObject.pianoPos + _beatTempo * _speedMultipler * _hitTime[i], 0), Quaternion.identity);
+            NoteObject buff = Instantiate(note, new Vector3(-2.5f + (int)_column[i], NoteObject.pianoPos + _beatTempo * _speedMultipler * _hitTime[i], 0), Quaternion.identity);
             buff._keyPress = GameManager.basicButtons[(int)_column[i]];
             buff.transform.SetParent(this.transform);
             buff.hitTime = _hitTime[i];
