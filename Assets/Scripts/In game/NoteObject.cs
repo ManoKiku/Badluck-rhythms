@@ -10,7 +10,7 @@ public class NoteObject : MonoBehaviour
     public KeyCode _keyPress;
 
     [SerializeField]
-    private bool _canBePressed = false, _obtained = false, _isFading = false;
+    private bool _canBePressed = false, _obtained = false, _isFirstTime = true, _isFading = false;
     [SerializeField]
     public static float pianoPos = -3.5f;
     [SerializeField]
@@ -27,7 +27,7 @@ public class NoteObject : MonoBehaviour
                 GameObject buff = Instantiate(explosionParticle, transform.position, Quaternion.identity);
                 Destroy(buff, 1f);
                 Destroy(gameObject);
-                if(Math.Abs(transform.position.y - pianoPos) > .36f) {
+                if(Math.Abs(transform.position.y - pianoPos) > .35f) {
                     GameManager.instance.NormalHit();
                 }
                 else if(Math.Abs(transform.position.y - pianoPos) > .2f) {
@@ -35,6 +35,12 @@ public class NoteObject : MonoBehaviour
                 }
                 else {
                     GameManager.instance.PerfectHit();
+                }
+            }
+            else {
+                if(transform.position.y - pianoPos > .35f && transform.position.y - pianoPos < 1 && _isFirstTime) {
+                    GameManager.instance.NoteMissed();
+                    _isFirstTime = false;
                 }
             }
         }

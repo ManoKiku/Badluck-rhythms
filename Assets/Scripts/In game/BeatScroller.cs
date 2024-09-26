@@ -22,6 +22,8 @@ public class BeatScroller : MonoBehaviour
     public bool isStarted = false, isEnded = false, isSpeed = false;
 
     [SerializeField]
+    public float lastNote;
+    [SerializeField]
     static public float timer;
 
     void Start() {
@@ -38,6 +40,7 @@ public class BeatScroller : MonoBehaviour
             buff.transform.SetParent(this.transform);
             buff.hitTime = _hitTime[i];
         }
+        lastNote = _hitTime[_hitTime.Count - 1];
         Debug.Log("Current note count: " + _hitTime.Count);
     }
 
@@ -45,7 +48,7 @@ public class BeatScroller : MonoBehaviour
         if(isStarted && !isEnded) {
             timer += Time.deltaTime;
             transform.position -= new Vector3(0f, _beatTempo * _speedMultipler * Time.deltaTime , 0f);
-            if(_hitTime[_hitTime.Count - 1] <= timer - 3f) {
+            if(lastNote <= timer - 3f) {
                 isEnded = true;
                 GameManager.instance.ShowResult();
             }

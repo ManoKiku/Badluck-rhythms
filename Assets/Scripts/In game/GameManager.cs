@@ -2,32 +2,43 @@ using System.IO;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using UnityEditor.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
+    [Header("Important objects")]
     [SerializeField]
     private AudioSource _music;    
     [SerializeField]
     private AudioSource _vfx;
     [SerializeField]
     private AudioClip _hit, _miss;
-
+    [SerializeField]
+    private GameObject _loseMenu;
     [SerializeField]
     private BeatScroller _bs;
     [SerializeField]
-    private bool _startPlaying;
-
-    [Space(50)]
+    private Slider _hpSlider;
     [SerializeField]
-    public int currentScore = 0;
+    private Text _lvlPercent;
+    [SerializeField]
+    private bool _startPlaying;
+    [SerializeField]
+    private float _hp = 1f;
+
+    [Space(30)]
+    [Header("Hit settings")]
     [SerializeField]
     private int _scorePerHit = 50;
     [SerializeField]
     private int _scorePerGoodHit = 100;
     [SerializeField]
-    private int _scorePerPerfectHit = 330;
+    private int _scorePerPerfectHit = 300;
 
-    [Space(50)]
+    [Space(30)]
+    [Header("Statistics")]
+    [SerializeField]
+    public int currentScore = 0;
     [SerializeField]
     private int _missCount = 0;
     [SerializeField]
@@ -43,7 +54,8 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     private float _modsMul = 1.0f;
 
-    [Space(50)]
+    [Space(30)]
+    [Header("Texts")]
     [SerializeField]
     public Text scoreText;
     [SerializeField]
@@ -51,7 +63,8 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     public Text hitText;
 
-    [Space(50)]
+    [Space(30)]
+    [Header("Result menu")]
     [SerializeField]
     public GameObject resultObject;
     [SerializeField]
@@ -86,8 +99,17 @@ public class GameManager : MonoBehaviour
                 _music.Play();
             }
         }
-        if(Input.GetKeyDown(KeyCode.Escape)) {
-            OpenMainMenu();
+        else if(!_bs.isEnded) 
+        {
+            _hp -= _hp > .4f ? 0.03f * Time.deltaTime : 0;
+            _hpSlider.value = _hp;
+            _lvlPercent.text = System.Convert.ToString((int)(BeatScroller.timer / _bs.lastNote * 100)) + "%";
+            if(Input.GetKeyDown(KeyCode.Escape)) {
+                LoadSceneByName("MainMenu");
+            }
+            if(Input.GetKeyDown(KeyCode.R)) {
+                SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+            }
         }
     }
 
@@ -120,21 +142,36 @@ public class GameManager : MonoBehaviour
     public void NoteHit() {
         _vfx.Stop();
         _vfx.PlayOneShot(_hit);
+
         ++comboCount;
+        AddHp(.06f);
+
         ScoreTextChange();
-        if(maxCombo < comboCount) {
+
+        if(maxCombo < comboCount) 
             maxCombo = comboCount;
-        }
+        
     }
 
     public void NoteMissed() {
         Debug.Log("Missed!");
         hitText.color = Color.red;
         hitText.text = "MISS";
+
         _vfx.Stop();
         _vfx.PlayOneShot(_miss);
+
         comboCount = 0;
         ++_missCount;
+        AddHp(-.1f);
+
+        if(_hp <= 0) {
+            _hp = 0;
+            Time.timeScale = 0;
+            _music.Pause();
+            _loseMenu.SetActive(true);
+        }
+
         ScoreTextChange();
     }
 
@@ -184,11 +221,18 @@ public class GameManager : MonoBehaviour
         Debug.Log(json);
     }
 
-    public void OpenMainMenu() {
-        SceneManager.LoadScene("MainMenu");
+    public void LoadSceneByName(string sceneName) {
+        Time.timeScale = 1f;
+        SceneManager.LoadScene(sceneName);
     }
 
     public void UploadResult() {
         AppDataBase.ExecuteQueryWithoutAnswer($"INSERT INTO Records VALUES ({PlayerPrefs.GetInt("Level")}, '{PlayerPrefs.GetString("Player")}', {currentScore}, {_perfectCount}, {_goodCount}, {_normalCount}, {_missCount})");
+    }
+
+    public void AddHp(float num) {
+        _hp += num;
+        if(_hp > 1) 
+            _hp = 1;
     }
 }
