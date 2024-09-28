@@ -77,6 +77,8 @@ public class GameManager : MonoBehaviour
 
     void Awake()
     {
+        _music.volume = PlayerPrefs.GetFloat("MusicPreference");
+        _vfx.volume = PlayerPrefs.GetFloat("vfxPreference");
         Debug.Log(Application.streamingAssetsPath + PlayerPrefs.GetInt("Level"));
         instance = this;
         LoadDataFromFile();
@@ -101,9 +103,9 @@ public class GameManager : MonoBehaviour
         }
         else if(!_bs.isEnded) 
         {
-            _hp -= _hp > .4f ? 0.03f * Time.deltaTime : 0;
+            _hp -= _hp > .4f ? 0.03f * _music.pitch *Time.deltaTime : 0;
             _hpSlider.value = _hp;
-            _lvlPercent.text = System.Convert.ToString((int)(BeatScroller.timer / _bs.lastNote * 100)) + "%";
+            _lvlPercent.text = System.Convert.ToString((int)(BeatScroller.timer / (_bs.lastNote + 3f) * 100)) + "%";
             if(Input.GetKeyDown(KeyCode.Escape)) {
                 LoadSceneByName("MainMenu");
             }

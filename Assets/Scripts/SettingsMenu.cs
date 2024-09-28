@@ -71,6 +71,7 @@ public class SettingsMenu : MonoBehaviour
         loginText.gameObject.SetActive(isHide);
         passwordText.gameObject.SetActive(isHide);
         logOutButton.gameObject.SetActive(!isHide);
+        rememberAccount.gameObject.SetActive(isHide);
         loggedAsText.gameObject.SetActive(!isHide);
     }
 
@@ -78,29 +79,26 @@ public class SettingsMenu : MonoBehaviour
         return PlayerPrefs.HasKey("Player") && PlayerPrefs.GetString("Player") != String.Empty;
     }
 
-    public void SetVolume(float volume)
+    public void SetVfx(float volume)
+    {
+        vfxVolume = volume;
+    }
+
+    public void SetMusic(float volume)
     {
         musicVolume = volume;
-        SaveSettings();
     }
+
     public void SetFullscreen(bool isFullscreen)
     {
         Screen.fullScreen = isFullscreen;
-        SaveSettings();
     }
 
     public void SetResolution(int resolutionIndex)
     {
         Resolution resolution = resolutions[resolutionIndex];
         Screen.SetResolution(resolution.width, resolution.height, Screen.fullScreen);
-        SaveSettings();
-    }
-
-    
-    public void SetQuality(int qualityIndex)
-    {
-        QualitySettings.SetQualityLevel(qualityIndex);
-        SaveSettings();
+        PlayerPrefs.SetInt("ResolutionPreference", resolutionIndex);
     }
 
     public void SaveSettings()
@@ -108,6 +106,8 @@ public class SettingsMenu : MonoBehaviour
         PlayerPrefs.SetInt("FullscreenPreference", System.Convert.ToInt32(Screen.fullScreen));
         PlayerPrefs.SetFloat("MusicPreference", musicVolume);
         PlayerPrefs.SetFloat("vfxPreference", vfxVolume);
+        Debug.Log(PlayerPrefs.GetFloat("MusicPreference"));
+        Debug.Log("Saved!");
     }
 
     public void LoadSettings(int currentResolutionIndex)
@@ -120,16 +120,13 @@ public class SettingsMenu : MonoBehaviour
             Screen.fullScreen = System.Convert.ToBoolean(PlayerPrefs.GetInt("FullscreenPreference"));
             fullScreen.isOn = Screen.fullScreen;
         }
-        else
-            Screen.fullScreen = true;
-        if (PlayerPrefs.HasKey("MusicPreference"))
+        if (PlayerPrefs.HasKey("MusicPreference")) {
+            Debug.Log(PlayerPrefs.GetFloat("MusicPreference"));
             musicSlider.value = PlayerPrefs.GetFloat("MusicPreference");
-        else
-            musicSlider.value = PlayerPrefs.GetFloat("MusicPreference");
-        if (PlayerPrefs.HasKey("vfxPreference"))
+        }
+        if (PlayerPrefs.HasKey("vfxPreference")) {
             vfxSlider.value = PlayerPrefs.GetFloat("vfxPreference");
-        else
-            vfxSlider.value = PlayerPrefs.GetFloat("vfxcPreference");
+        }
     }
 
     public void LogIn()

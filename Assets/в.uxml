@@ -1,0 +1,3 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <ui:Label tabindex="-1" text=" BADLUCK RHYTMES" display-tooltip-when-elided="true" style="-unity-font-definition: url(&apos;project://database/Assets/ofont.ru_AA%20Magnum.ttf?fileID=12800000&amp;guid=2316e82da28aa8e4b9a4dacc1c300f83&amp;type=3#ofont.ru_AA Magnum&apos;); font-size: 20px; color: rgb(0, 0, 0); -unity-text-align: upper-center; white-space: nowrap; text-shadow: 2px 5px 0 rgba(0, 0, 0, 0.25);" />
+</ui:UXML>

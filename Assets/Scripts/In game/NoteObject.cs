@@ -22,7 +22,7 @@ public class NoteObject : MonoBehaviour
 
     private void Update() {
         if(Input.GetKeyDown(_keyPress)) {
-            if(_canBePressed) {
+            if(_canBePressed && _isFirstTime) {
                 _obtained = true;
                 GameObject buff = Instantiate(explosionParticle, transform.position, Quaternion.identity);
                 Destroy(buff, 1f);
@@ -69,10 +69,10 @@ public class NoteObject : MonoBehaviour
       private void OnTriggerExit2D(Collider2D other) {
         if (other.tag == "piano") {
             _canBePressed = false;
-            if(!_obtained) {
+            if(!_obtained && _isFirstTime) 
                 GameManager.instance.NoteMissed();
-                Destroy(gameObject, 3f);
-            }
+
+            Destroy(gameObject, 3f);
         }
     }
 }
