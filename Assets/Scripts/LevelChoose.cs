@@ -1,4 +1,6 @@
+using System.Collections;
 using System.Data;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -6,11 +8,14 @@ using UnityEngine.UI;
 public class LevelChoose : MonoBehaviour
 {
     [SerializeField]
-    Text levelName, levelDifficulty, levelDescription, record;
+    private GameObject _fadePanel;
     [SerializeField]
-    Transform parentTransform;
+    private Text levelName, levelDifficulty, levelDescription, record;
+    [SerializeField]
+    private Transform parentTransform;
 
     void Awake() {
+        StartCoroutine(FadeOut(_fadePanel));
         if(!PlayerPrefs.HasKey("Level"))
             PlayerPrefs.SetInt("Level", 1);
             
@@ -42,6 +47,25 @@ public class LevelChoose : MonoBehaviour
     }
 
     public void PlayLevel() {
-         SceneManager.LoadScene("Game");
+        StartCoroutine(FadeIn(_fadePanel));
+        StartCoroutine(SceneLoadDelay("Game", 0.5f));
+    }
+
+    public static IEnumerator FadeIn(GameObject fadePanel) {
+        fadePanel.SetActive(true);
+        fadePanel.GetComponent<Animator>().Play("FadeIn");
+        yield return new WaitForSeconds(0.5f);
+    }
+
+    public static IEnumerator FadeOut(GameObject fadePanel) {
+        fadePanel.GetComponent<Animator>().Play("FadeOut");
+        yield return new WaitForSeconds(0.5f);
+        fadePanel.SetActive(false);
+    }
+
+    public static IEnumerator SceneLoadDelay(string sceneName, float delay) {
+        yield return new WaitForSeconds(delay);
+        Time.timeScale = 1f;
+        SceneManager.LoadSceneAsync(sceneName);
     }
 }

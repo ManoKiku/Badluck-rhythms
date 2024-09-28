@@ -22,6 +22,8 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     private Text _lvlPercent;
     [SerializeField]
+    private GameObject _fadePanel;
+    [SerializeField]
     private bool _startPlaying;
     [SerializeField]
     private float _hp = 1f;
@@ -66,7 +68,7 @@ public class GameManager : MonoBehaviour
     [Space(30)]
     [Header("Result menu")]
     [SerializeField]
-    public GameObject resultObject;
+    public GameObject resultObject, uploadRecord;
     [SerializeField]
     public Text resultScoreText;
     [SerializeField]
@@ -77,10 +79,16 @@ public class GameManager : MonoBehaviour
 
     void Awake()
     {
+        if(PlayerPrefs.GetString("Player") == string.Empty)
+            uploadRecord.SetActive(false);
+        StartCoroutine(LevelChoose.FadeOut(_fadePanel));
+
         _music.volume = PlayerPrefs.GetFloat("MusicPreference");
         _vfx.volume = PlayerPrefs.GetFloat("vfxPreference");
+
         Debug.Log(Application.streamingAssetsPath + PlayerPrefs.GetInt("Level"));
         instance = this;
+
         LoadDataFromFile();
         GetAudioFile();
         if(PlayerPrefs.GetInt("Speed") != 0) {
@@ -110,13 +118,14 @@ public class GameManager : MonoBehaviour
                 LoadSceneByName("MainMenu");
             }
             if(Input.GetKeyDown(KeyCode.R)) {
-                SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+                LoadSceneByName("Game");
             }
         }
     }
 
     public void NormalHit() {
         Debug.Log("Normal hit!");
+
         hitText.color = Color.yellow;
         hitText.text = "NORMAL";
         currentScore += (int)(_scorePerHit * (1 + comboCount / 100f) * _modsMul);
@@ -126,6 +135,7 @@ public class GameManager : MonoBehaviour
 
     public void GoodHit() {
         Debug.Log("Good hit!");
+
         hitText.color = Color.blue;
         hitText.text = "GOOD";
         currentScore += (int)(_scorePerGoodHit * (1 + comboCount / 100f) * _modsMul);
@@ -134,6 +144,7 @@ public class GameManager : MonoBehaviour
     }
     public void PerfectHit() {
         Debug.Log("Perfect hit!");
+
         hitText.color = Color.green;
         hitText.text = "PERFECT";
         currentScore += (int)(_scorePerPerfectHit * (1 + comboCount / 100f) * _modsMul);
@@ -169,7 +180,7 @@ public class GameManager : MonoBehaviour
 
         if(_hp <= 0) {
             _hp = 0;
-            Time.timeScale = 0;
+            _bs.isEnded = true;
             _music.Pause();
             _loseMenu.SetActive(true);
         }
@@ -224,8 +235,8 @@ public class GameManager : MonoBehaviour
     }
 
     public void LoadSceneByName(string sceneName) {
-        Time.timeScale = 1f;
-        SceneManager.LoadScene(sceneName);
+        StartCoroutine(LevelChoose.FadeIn(_fadePanel));
+        StartCoroutine(LevelChoose.SceneLoadDelay(sceneName, 0.5f));
     }
 
     public void UploadResult() {

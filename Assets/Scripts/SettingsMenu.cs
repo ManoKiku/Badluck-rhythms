@@ -7,7 +7,7 @@ using System;
 public class SettingsMenu : MonoBehaviour
 {
     [SerializeField]
-    private TMP_InputField logUsername, logPassword, username, password, passwordConfirm, email;
+    private TMP_InputField logUsername, logPassword, username, password, passwordConfirm;
     [SerializeField]
     private Text signError, logError, usernameMenu, loginText, passwordText, loggedAsText;
     [SerializeField]
@@ -87,6 +87,7 @@ public class SettingsMenu : MonoBehaviour
     public void SetMusic(float volume)
     {
         musicVolume = volume;
+        GetComponent<AudioSource>().volume = musicSlider.value;
     }
 
     public void SetFullscreen(bool isFullscreen)
@@ -123,6 +124,7 @@ public class SettingsMenu : MonoBehaviour
         if (PlayerPrefs.HasKey("MusicPreference")) {
             Debug.Log(PlayerPrefs.GetFloat("MusicPreference"));
             musicSlider.value = PlayerPrefs.GetFloat("MusicPreference");
+            GetComponent<AudioSource>().volume = musicSlider.value;
         }
         if (PlayerPrefs.HasKey("vfxPreference")) {
             vfxSlider.value = PlayerPrefs.GetFloat("vfxPreference");
@@ -199,12 +201,8 @@ public class SettingsMenu : MonoBehaviour
             signError.text = "The Passwords must match!";
             return;
         }
-        else if(email.text.Length < 1) {
-            signError.text = "The email field cannot be empty!";
-            return;
-        }
 
-        string query = $"SELECT * FROM Users WHERE Username = '{username.text}' OR Email = '{email.text}';";
+        string query = $"SELECT * FROM Users WHERE Username = '{username.text}';";
         Debug.Log(query);
         string answer = AppDataBase.ExecuteQueryWithAnswer(query);
 
@@ -218,7 +216,7 @@ public class SettingsMenu : MonoBehaviour
         {
             signError.color = Color.green;
             signError.text = "Successfully registered!";
-            AppDataBase.ExecuteQueryWithoutAnswer($"INSERT INTO Users (Username, Password, Email) VALUES ('{username.text}', '{password.text}', '{email.text}')");
+            AppDataBase.ExecuteQueryWithoutAnswer($"INSERT INTO Users (Username, Password) VALUES ('{username.text}', '{password.text}')");
         }
     }
 }
