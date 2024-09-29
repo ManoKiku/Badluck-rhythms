@@ -3,6 +3,8 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
 using System;
+using System.Collections;
+
 
 public class SettingsMenu : MonoBehaviour
 {
@@ -24,6 +26,8 @@ public class SettingsMenu : MonoBehaviour
 
     private static bool isFirstStartUp = true;
     public static string login = String.Empty;
+
+    private bool _active = false;
 
     void Awake()
     {
@@ -123,11 +127,13 @@ public class SettingsMenu : MonoBehaviour
         }
         if (PlayerPrefs.HasKey("MusicPreference")) {
             Debug.Log(PlayerPrefs.GetFloat("MusicPreference"));
-            musicSlider.value = PlayerPrefs.GetFloat("MusicPreference");
-            GetComponent<AudioSource>().volume = musicSlider.value;
+            musicVolume = PlayerPrefs.GetFloat("MusicPreference");
+            musicSlider.value = musicVolume;
+            GetComponent<AudioSource>().volume = musicVolume;
         }
         if (PlayerPrefs.HasKey("vfxPreference")) {
-            vfxSlider.value = PlayerPrefs.GetFloat("vfxPreference");
+            vfxVolume = PlayerPrefs.GetFloat("vfxPreference");
+            vfxSlider.value = vfxVolume;
         }
     }
 
@@ -181,8 +187,8 @@ public class SettingsMenu : MonoBehaviour
     public void SignIn()
     {
         signError.color = Color.red;
-        if(username.text.Length < 1) {
-            signError.text = "The username field cannot be empty!";
+        if(username.text.Length < 4) {
+            signError.text = "The username must be at least 4 characters!";
             return;
         }
         else if(password.text.Length < 1) {
@@ -210,7 +216,7 @@ public class SettingsMenu : MonoBehaviour
 
         if (answer != null)
         {
-            signError.text = "This username or email is already in use!";
+            signError.text = "This username is already in use!";
         }
         else
         {

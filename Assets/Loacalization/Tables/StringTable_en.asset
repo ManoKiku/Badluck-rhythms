@@ -1,0 +1,119 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9620f8c34305754d8cc9a7e49e852d9, type: 3}
+  m_Name: StringTable_en
+  m_EditorClassIdentifier: 
+  m_LocaleId:
+    m_Code: en
+  m_SharedData: {fileID: 11400000, guid: 970d8075183a5d84795e845e9b8fa65f, type: 2}
+  m_Metadata:
+    m_Items: []
+  m_TableData:
+  - m_Id: 6492512256
+    m_Localized: Exit
+    m_Metadata:
+      m_Items: []
+  - m_Id: 680605245440
+    m_Localized: Sign in
+    m_Metadata:
+      m_Items: []
+  - m_Id: 789871058944
+    m_Localized: Sign up
+    m_Metadata:
+      m_Items: []
+  - m_Id: 919437303808
+    m_Localized: Settings
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1048592506880
+    m_Localized: Play
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1392483491840
+    m_Localized: Username
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1590475612160
+    m_Localized: Password
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1686999130112
+    m_Localized: Password confirm
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1812211687424
+    m_Localized: Back
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1935780077568
+    m_Localized: Remember account
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2109822722048
+    m_Localized: Log out
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2232850046976
+    m_Localized: Vfx
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2390274859008
+    m_Localized: Music
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2472353193984
+    m_Localized: Resolution
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2664754307072
+    m_Localized: Localization
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2806618251264
+    m_Localized: Level records
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2979218055168
+    m_Localized: Play a level
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3108733968384
+    m_Localized: Select a level
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3258365763584
+    m_Localized: Invisible
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3343719849984
+    m_Localized: Speed
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3574100385792
+    m_Localized: Upload result
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3720225742848
+    m_Localized: You lose
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3911737663488
+    m_Localized: Try again
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7687273963520
+    m_Localized: Full screen
+    m_Metadata:
+      m_Items: []
+  references:
+    version: 2
+    RefIds: []

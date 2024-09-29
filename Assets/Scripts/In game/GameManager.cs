@@ -2,7 +2,6 @@ using System.IO;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
-using UnityEditor.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -83,8 +82,10 @@ public class GameManager : MonoBehaviour
             uploadRecord.SetActive(false);
         StartCoroutine(LevelChoose.FadeOut(_fadePanel));
 
-        _music.volume = PlayerPrefs.GetFloat("MusicPreference");
-        _vfx.volume = PlayerPrefs.GetFloat("vfxPreference");
+        if(PlayerPrefs.HasKey("MusicPreference"))
+            _music.volume = PlayerPrefs.GetFloat("MusicPreference");
+        if(PlayerPrefs.HasKey("vfxPreference"))
+            _vfx.volume = PlayerPrefs.GetFloat("vfxPreference");
 
         Debug.Log(Application.streamingAssetsPath + PlayerPrefs.GetInt("Level"));
         instance = this;
@@ -157,7 +158,7 @@ public class GameManager : MonoBehaviour
         _vfx.PlayOneShot(_hit);
 
         ++comboCount;
-        AddHp(.06f);
+        AddHp(.04f);
 
         ScoreTextChange();
 

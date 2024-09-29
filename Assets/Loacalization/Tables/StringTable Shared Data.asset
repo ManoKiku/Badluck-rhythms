@@ -1,0 +1,124 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b11a58205ec3474ca216360e9fa74a8, type: 3}
+  m_Name: StringTable Shared Data
+  m_EditorClassIdentifier: 
+  m_TableCollectionName: StringTable
+  m_TableCollectionNameGuidString: 970d8075183a5d84795e845e9b8fa65f
+  m_Entries:
+  - m_Id: 6492512256
+    m_Key: Exit
+    m_Metadata:
+      m_Items: []
+  - m_Id: 680605245440
+    m_Key: Sign in
+    m_Metadata:
+      m_Items: []
+  - m_Id: 789871058944
+    m_Key: Sign up
+    m_Metadata:
+      m_Items: []
+  - m_Id: 919437303808
+    m_Key: Settings
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1048592506880
+    m_Key: Play
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1392483491840
+    m_Key: Username
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1590475612160
+    m_Key: Password
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1686999130112
+    m_Key: Password confirm
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1812211687424
+    m_Key: Back
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1935780077568
+    m_Key: Remember account
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2109822722048
+    m_Key: Log out
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2232850046976
+    m_Key: Vfx
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2390274859008
+    m_Key: Music
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2472353193984
+    m_Key: Resolution
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2664754307072
+    m_Key: Localization
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2806618251264
+    m_Key: Level records
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2979218055168
+    m_Key: Play a level
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3108733968384
+    m_Key: Select text
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3258365763584
+    m_Key: Invisible
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3343719849984
+    m_Key: Speed
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3574100385792
+    m_Key: Upload result
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3720225742848
+    m_Key: You lose
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3911737663488
+    m_Key: Try again
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7687273963520
+    m_Key: Full screen
+    m_Metadata:
+      m_Items: []
+  m_Metadata:
+    m_Items: []
+  m_KeyGenerator:
+    rid: 3541765103282028579
+  references:
+    version: 2
+    RefIds:
+    - rid: 3541765103282028579
+      type: {class: DistributedUIDGenerator, ns: UnityEngine.Localization.Tables, asm: Unity.Localization}
+      data:
+        m_CustomEpoch: 1727565829373
