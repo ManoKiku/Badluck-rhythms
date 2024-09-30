@@ -29,20 +29,17 @@ public class LevelChoose : MonoBehaviour
         levelDifficulty.text = "Level difficulty: " + level["Difficulty"].ToString();
         levelDescription.text = level["Description"].ToString();
 
-        GameObject[] allObjects = GameObject.FindGameObjectsWithTag("score");
-        foreach(GameObject obj in allObjects) 
-            Destroy(obj);
+        Text[] allObjects = parentTransform.gameObject.GetComponentsInChildren<Text>(true);
+        foreach(Text obj in allObjects) 
+            Destroy(obj.gameObject);
         
-        int count = 0;
         DataTable records = AppDataBase.GetTable($"SELECT Username, Score, Perfect, Good, Okay, Miss FROM Records WHERE id = {id} ORDER BY Score DESC");
 
         foreach(DataRow rows in records.Rows) {
-            Text buff = Instantiate(record, parentTransform);
             foreach(DataColumn col in records.Columns) {
-                buff.text += rows[col] + "\t";
+                Text buff = Instantiate(record, parentTransform);
+                buff.text += rows[col];
             }
-            buff.rectTransform.anchoredPosition -= new Vector2(0, 30 * count);
-            count++;
         }
     }
 

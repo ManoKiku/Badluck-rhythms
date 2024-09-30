@@ -62,7 +62,7 @@ MonoBehaviour:
       type: {class: LocalizedStringDatabase, ns: UnityEngine.Localization.Settings, asm: Unity.Localization}
       data:
         m_DefaultTableReference:
-          m_TableCollectionName: 
+          m_TableCollectionName: String Table
         m_CustomTableProvider:
           rid: -2
         m_CustomTablePostprocessor:

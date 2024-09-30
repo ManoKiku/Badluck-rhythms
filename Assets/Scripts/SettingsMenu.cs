@@ -27,13 +27,10 @@ public class SettingsMenu : MonoBehaviour
     private static bool isFirstStartUp = true;
     public static string login = String.Empty;
 
-    private bool _active = false;
-
     void Awake()
     {
         rememberAccount.isOn = PlayerPrefs.GetInt("DoRemember") != 0;
         if(isFirstStartUp) {
-            Debug.Log("First!");
             isFirstStartUp = false;
             if(IsLogenIn() && rememberAccount.isOn) {
                 login = PlayerPrefs.GetString("Player");
@@ -126,15 +123,18 @@ public class SettingsMenu : MonoBehaviour
             fullScreen.isOn = Screen.fullScreen;
         }
         if (PlayerPrefs.HasKey("MusicPreference")) {
-            Debug.Log(PlayerPrefs.GetFloat("MusicPreference"));
             musicVolume = PlayerPrefs.GetFloat("MusicPreference");
             musicSlider.value = musicVolume;
             GetComponent<AudioSource>().volume = musicVolume;
         }
+        else 
+            musicVolume = 1;
         if (PlayerPrefs.HasKey("vfxPreference")) {
             vfxVolume = PlayerPrefs.GetFloat("vfxPreference");
             vfxSlider.value = vfxVolume;
         }
+        else
+            vfxVolume = 1;
     }
 
     public void LogIn()

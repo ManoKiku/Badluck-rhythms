@@ -111,6 +111,42 @@ MonoBehaviour:
     m_Key: Full screen
     m_Metadata:
       m_Items: []
+  - m_Id: 343446870810624
+    m_Key: Enter username
+    m_Metadata:
+      m_Items: []
+  - m_Id: 343690069139456
+    m_Key: Enter password
+    m_Metadata:
+      m_Items: []
+  - m_Id: 343858478833664
+    m_Key: Enter password confirm
+    m_Metadata:
+      m_Items: []
+  - m_Id: 361756127649792
+    m_Key: Score
+    m_Metadata:
+      m_Items: []
+  - m_Id: 361882351034368
+    m_Key: Perfect
+    m_Metadata:
+      m_Items: []
+  - m_Id: 362000064176128
+    m_Key: Good
+    m_Metadata:
+      m_Items: []
+  - m_Id: 362224807567360
+    m_Key: Normal
+    m_Metadata:
+      m_Items: []
+  - m_Id: 362432111042560
+    m_Key: Miss
+    m_Metadata:
+      m_Items: []
+  - m_Id: 381405724663808
+    m_Key: Max combo
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

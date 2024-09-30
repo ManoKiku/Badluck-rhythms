@@ -2,6 +2,7 @@ using System.IO;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using UnityEngine.Localization;
 
 public class GameManager : MonoBehaviour
 {
@@ -73,11 +74,17 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     public Text resultHitText;
 
+    private string[] locale = new string[4];
     public static GameManager instance;
     public static KeyCode[] basicButtons = {KeyCode.S, KeyCode.D, KeyCode.F, KeyCode.J, KeyCode.K, KeyCode.L};
 
     void Awake()
     {
+        locale[0] = new LocalizedString("StringTable", "Perfect").GetLocalizedString();
+        locale[1] = new LocalizedString("StringTable", "Good").GetLocalizedString();
+        locale[2] = new LocalizedString("StringTable", "Normal").GetLocalizedString();
+        locale[3] = new LocalizedString("StringTable", "Miss").GetLocalizedString();
+
         if(PlayerPrefs.GetString("Player") == string.Empty)
             uploadRecord.SetActive(false);
         StartCoroutine(LevelChoose.FadeOut(_fadePanel));
@@ -114,7 +121,7 @@ public class GameManager : MonoBehaviour
         {
             _hp -= _hp > .4f ? 0.03f * _music.pitch *Time.deltaTime : 0;
             _hpSlider.value = _hp;
-            _lvlPercent.text = System.Convert.ToString((int)(BeatScroller.timer / (_bs.lastNote + 3f) * 100)) + "%";
+            _lvlPercent.text = System.Convert.ToString(Mathf.Round(BeatScroller.timer / (_bs.lastNote + 3f) * 100)) + "%";
             if(Input.GetKeyDown(KeyCode.Escape)) {
                 LoadSceneByName("MainMenu");
             }
@@ -122,35 +129,6 @@ public class GameManager : MonoBehaviour
                 LoadSceneByName("Game");
             }
         }
-    }
-
-    public void NormalHit() {
-        Debug.Log("Normal hit!");
-
-        hitText.color = Color.yellow;
-        hitText.text = "NORMAL";
-        currentScore += (int)(_scorePerHit * (1 + comboCount / 100f) * _modsMul);
-        ++_normalCount;
-        NoteHit();
-    }
-
-    public void GoodHit() {
-        Debug.Log("Good hit!");
-
-        hitText.color = Color.blue;
-        hitText.text = "GOOD";
-        currentScore += (int)(_scorePerGoodHit * (1 + comboCount / 100f) * _modsMul);
-        ++_goodCount;
-        NoteHit();
-    }
-    public void PerfectHit() {
-        Debug.Log("Perfect hit!");
-
-        hitText.color = Color.green;
-        hitText.text = "PERFECT";
-        currentScore += (int)(_scorePerPerfectHit * (1 + comboCount / 100f) * _modsMul);
-        ++_perfectCount;
-        NoteHit();
     }
 
     public void NoteHit() {
@@ -164,13 +142,42 @@ public class GameManager : MonoBehaviour
 
         if(maxCombo < comboCount) 
             maxCombo = comboCount;
-        
+    }
+
+    public void PerfectHit() {
+        Debug.Log("Perfect hit!");
+
+        hitText.color = Color.green;
+        hitText.text = locale[0];
+        currentScore += (int)(_scorePerPerfectHit * (1 + comboCount / 100f) * _modsMul);
+        ++_perfectCount;
+        NoteHit();
+    }
+
+    public void NormalHit() {
+        Debug.Log("Normal hit!");
+
+        hitText.color = Color.yellow;
+        hitText.text = locale[2];
+        currentScore += (int)(_scorePerHit * (1 + comboCount / 100f) * _modsMul);
+        ++_normalCount;
+        NoteHit();
+    }
+
+    public void GoodHit() {
+        Debug.Log("Good hit!");
+
+        hitText.color = Color.blue;
+        hitText.text = locale[1];
+        currentScore += (int)(_scorePerGoodHit * (1 + comboCount / 100f) * _modsMul);
+        ++_goodCount;
+        NoteHit();
     }
 
     public void NoteMissed() {
         Debug.Log("Missed!");
         hitText.color = Color.red;
-        hitText.text = "MISS";
+        hitText.text = locale[3];
 
         _vfx.Stop();
         _vfx.PlayOneShot(_miss);
@@ -196,8 +203,12 @@ public class GameManager : MonoBehaviour
 
     public void ShowResult() {
         resultObject.gameObject.SetActive(true);
-        resultScoreText.text = "Score: " + currentScore + "\nMax combo: " + maxCombo;
-        resultHitText.text = "Perfect hits:" + _perfectCount + "\nGood hits:" + _goodCount + "\nNormal hits:" + _normalCount + "\nMisses:" + _missCount;
+        resultScoreText.text =  $"{new LocalizedString("StringTable", "Score").GetLocalizedString()}: " + currentScore + 
+        $"\n{new LocalizedString("StringTable", "Max combo").GetLocalizedString()}: "+ maxCombo;
+        resultHitText.text = $"{new LocalizedString("StringTable", "Perfect").GetLocalizedString()}:" + _perfectCount + 
+        $"\n{new LocalizedString("StringTable", "Good").GetLocalizedString()}:" + _goodCount + 
+        $"\n{new LocalizedString("StringTable", "Normal").GetLocalizedString()}:" + _normalCount + 
+        $"\n{new LocalizedString("StringTable", "Miss").GetLocalizedString()}:" + _missCount;
     }
 
     private string GetMusicPath()
