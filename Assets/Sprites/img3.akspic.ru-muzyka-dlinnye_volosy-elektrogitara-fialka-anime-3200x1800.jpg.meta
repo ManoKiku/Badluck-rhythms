@@ -140,7 +140,8 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      img3.akspic.ru-muzyka-dlinnye_volosy-elektrogitara-fialka-anime-3200x1800_0: -3462518960556278480
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

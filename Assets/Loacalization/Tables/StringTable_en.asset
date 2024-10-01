@@ -150,6 +150,26 @@ MonoBehaviour:
     m_Localized: Max combo
     m_Metadata:
       m_Items: []
+  - m_Id: 947576510132224
+    m_Localized: Invalid login information entered!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 946614890442752
+    m_Localized: The username must be at least 4 characters!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 947083650052096
+    m_Localized: Password must be at least 8 characters!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 947116915077120
+    m_Localized: The password confirm field cannot be empty!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 947154286325760
+    m_Localized: The Passwords must match!
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

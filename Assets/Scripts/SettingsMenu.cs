@@ -4,6 +4,7 @@ using TMPro;
 using UnityEngine.UI;
 using System;
 using System.Collections;
+using UnityEngine.Localization;
 
 
 public class SettingsMenu : MonoBehaviour
@@ -141,12 +142,12 @@ public class SettingsMenu : MonoBehaviour
     {
         logError.color = Color.red;
 
-        if(logUsername.text.Length < 1) {
-            logError.text = "The username field cannot be empty!";
+        if(logUsername.text.Length < 4) {
+            logError.text = new LocalizedString("StringTable", "User char error").GetLocalizedString();
             return;
         }
-        else if(logPassword.text.Length < 1) {
-            logError.text = "The password field cannot be empty!";
+        else if(logPassword.text.Length < 8) {
+            logError.text = new LocalizedString("StringTable", "Password error").GetLocalizedString();
             return;
         }
 
@@ -169,7 +170,7 @@ public class SettingsMenu : MonoBehaviour
         }
         else
         {
-            logError.text = "Invalid login information entered!";
+            logError.text = new LocalizedString("StringTable", "Invalid information").GetLocalizedString();
         }
     }
 
@@ -188,23 +189,19 @@ public class SettingsMenu : MonoBehaviour
     {
         signError.color = Color.red;
         if(username.text.Length < 4) {
-            signError.text = "The username must be at least 4 characters!";
+            signError.text = new LocalizedString("StringTable", "User char error").GetLocalizedString();
             return;
         }
-        else if(password.text.Length < 1) {
-            signError.text = "The password field cannot be empty!";
+        else if(password.text.Length < 8) {
+            signError.text = new LocalizedString("StringTable", "Password error").GetLocalizedString();
             return;
         }
         else if(passwordConfirm.text.Length < 1) {
-            signError.text = "The password confirm field cannot be empty!";
-            return;
-        }
-        else if (password.text.Length < 8) {
-            signError.text = "password must be at least 8 characters";
+            signError.text = new LocalizedString("StringTable", "Password confirm error").GetLocalizedString();
             return;
         }
         else if(password.text != passwordConfirm.text) {
-            signError.text = "The Passwords must match!";
+            signError.text = new LocalizedString("StringTable", "Password match error").GetLocalizedString();
             return;
         }
 

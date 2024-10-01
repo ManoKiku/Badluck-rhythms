@@ -147,6 +147,26 @@ MonoBehaviour:
     m_Key: Max combo
     m_Metadata:
       m_Items: []
+  - m_Id: 946614890442752
+    m_Key: User char error
+    m_Metadata:
+      m_Items: []
+  - m_Id: 947083650052096
+    m_Key: Password error
+    m_Metadata:
+      m_Items: []
+  - m_Id: 947116915077120
+    m_Key: Password confirm error
+    m_Metadata:
+      m_Items: []
+  - m_Id: 947154286325760
+    m_Key: Password match error
+    m_Metadata:
+      m_Items: []
+  - m_Id: 947576510132224
+    m_Key: Invalid information
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:
