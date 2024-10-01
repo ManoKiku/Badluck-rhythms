@@ -213,7 +213,7 @@ public class GameManager : MonoBehaviour
 
     private string GetMusicPath()
     {
-        return Application.streamingAssetsPath + "/"+ PlayerPrefs.GetInt("Level");
+        return Application.streamingAssetsPath + "/levels/"+ PlayerPrefs.GetInt("Level");
     }
 
     void GetAudioFile()

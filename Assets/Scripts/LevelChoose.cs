@@ -1,6 +1,6 @@
 using System.Collections;
 using System.Data;
-using Unity.VisualScripting;
+using System.IO;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -10,12 +10,26 @@ public class LevelChoose : MonoBehaviour
     [SerializeField]
     private GameObject _fadePanel;
     [SerializeField]
-    private Text levelName, levelDifficulty, levelDescription, record;
+    Button _buttonPrefab;
     [SerializeField]
-    private Transform parentTransform;
+    private Text _levelName, _levelDifficulty, _levelDescription, _record;
+    [SerializeField]
+    private Transform _parentTransform, _levelsTransform;
 
     void Awake() {
         StartCoroutine(FadeOut(_fadePanel));
+
+        DataTable levels = AppDataBase.GetTable($"SELECT id FROM Levels ORDER BY Difficulty");
+
+        foreach(DataRow rows in levels.Rows) {
+            string buff = AppDataBase.ExecuteQueryWithAnswer($"SELECT Name FROM Levels WHERE id = {rows["id"]}");
+            if(buff != null && File.Exists($"{Application.streamingAssetsPath}/levels/{rows["id"]}.bytes")) {
+                Button inst = Instantiate(_buttonPrefab, _levelsTransform);
+                inst.GetComponentInChildren<Text>().text = buff;
+                inst.onClick.AddListener(delegate { ChooseLevel(System.Convert.ToInt32(rows["id"])); });
+            }
+        }
+
         if(!PlayerPrefs.HasKey("Level"))
             PlayerPrefs.SetInt("Level", 1);
             
@@ -25,11 +39,11 @@ public class LevelChoose : MonoBehaviour
     public void ChooseLevel(int id) {
         PlayerPrefs.SetInt("Level", id);
         DataRow level = AppDataBase.GetTable($"SELECT * FROM LEVELS WHERE id = {id}").Rows[0];
-        levelName.text = level["Name"].ToString();
-        levelDifficulty.text = "Level difficulty: " + level["Difficulty"].ToString();
-        levelDescription.text = level["Description"].ToString();
+        _levelName.text = level["Name"].ToString();
+        _levelDifficulty.text = "Level difficulty: " + level["Difficulty"].ToString();
+        _levelDescription.text = level["Description"].ToString();
 
-        Text[] allObjects = parentTransform.gameObject.GetComponentsInChildren<Text>(true);
+        Text[] allObjects = _parentTransform.gameObject.GetComponentsInChildren<Text>(true);
         foreach(Text obj in allObjects) 
             Destroy(obj.gameObject);
         
@@ -37,7 +51,7 @@ public class LevelChoose : MonoBehaviour
 
         foreach(DataRow rows in records.Rows) {
             foreach(DataColumn col in records.Columns) {
-                Text buff = Instantiate(record, parentTransform);
+                Text buff = Instantiate(_record, _parentTransform);
                 buff.text += rows[col];
             }
         }
