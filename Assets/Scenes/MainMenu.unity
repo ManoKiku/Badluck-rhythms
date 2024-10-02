@@ -642,7 +642,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 43.031}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 729.13, y: 51.2}
+  m_AnchoredPosition: {x: 714.7, y: 56.3}
   m_SizeDelta: {x: 371.87, y: 80}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &61595103
@@ -667,7 +667,7 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 12800000, guid: 2316e82da28aa8e4b9a4dacc1c300f83, type: 3}
-    m_FontSize: 40
+    m_FontSize: 30
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 0
@@ -3955,7 +3955,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 1636716547}
   m_Direction: 0
   m_Value: 0
-  m_Size: 0.9999999
+  m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -4384,8 +4384,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 43.031}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 697, y: 151}
-  m_SizeDelta: {x: 472.44, y: 80}
+  m_AnchoredPosition: {x: 740.4, y: 195.3}
+  m_SizeDelta: {x: 602.39, y: 80}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &515999297
 MonoBehaviour:
@@ -4409,7 +4409,7 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 12800000, guid: 2316e82da28aa8e4b9a4dacc1c300f83, type: 3}
-    m_FontSize: 60
+    m_FontSize: 40
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 0
@@ -4418,7 +4418,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
+    m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: Level name
 --- !u!222 &515999298
@@ -5053,7 +5053,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -312, y: 206.49994}
+  m_AnchoredPosition: {x: -312, y: 206.49998}
   m_SizeDelta: {x: 624.01, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &550053910
@@ -10507,6 +10507,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 1
         m_CallState: 2
+      - m_Target: {fileID: 519420035}
+        m_TargetAssemblyTypeName: SettingsMenu, Assembly-CSharp
+        m_MethodName: LocaleLogin
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
 --- !u!114 &1442501978
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12702,6 +12714,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 1
         m_CallState: 2
+      - m_Target: {fileID: 519420036}
+        m_TargetAssemblyTypeName: LevelChoose, Assembly-CSharp
+        m_MethodName: LoadCurrentLevel
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
 --- !u!114 &1637688997
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13478,7 +13502,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 43}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: -75, y: -125.99951}
+  m_AnchoredPosition: {x: -75, y: -125.99948}
   m_SizeDelta: {x: 1081.73, y: 660.27}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1788527008
@@ -14362,7 +14386,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1131096991}
   m_HandleRect: {fileID: 1131096990}
   m_Direction: 2
-  m_Value: 1
+  m_Value: 0
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -15411,7 +15435,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 77.12988, y: -82.489746}
+  m_AnchoredPosition: {x: 75.399994, y: -83.100006}
   m_SizeDelta: {x: 500.05, y: 503.26}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!95 &1993216235

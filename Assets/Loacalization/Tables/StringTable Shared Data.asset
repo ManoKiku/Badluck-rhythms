@@ -167,6 +167,26 @@ MonoBehaviour:
     m_Key: Invalid information
     m_Metadata:
       m_Items: []
+  - m_Id: 1048191101034496
+    m_Key: Level difficulty
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1061583798919168
+    m_Key: Logged in
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1062145969872896
+    m_Key: Registered
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1062845424590848
+    m_Key: Username in use
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1063121665646592
+    m_Key: Logged as
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

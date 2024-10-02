@@ -2,6 +2,7 @@ using System.Collections;
 using System.Data;
 using System.IO;
 using UnityEngine;
+using UnityEngine.Localization;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
@@ -30,6 +31,10 @@ public class LevelChoose : MonoBehaviour
             }
         }
 
+        LoadCurrentLevel();
+    }
+
+    public void LoadCurrentLevel() {
         if(!PlayerPrefs.HasKey("Level"))
             PlayerPrefs.SetInt("Level", 1);
             
@@ -40,7 +45,7 @@ public class LevelChoose : MonoBehaviour
         PlayerPrefs.SetInt("Level", id);
         DataRow level = AppDataBase.GetTable($"SELECT * FROM LEVELS WHERE id = {id}").Rows[0];
         _levelName.text = level["Name"].ToString();
-        _levelDifficulty.text = "Level difficulty: " + level["Difficulty"].ToString();
+        _levelDifficulty.text = new LocalizedString("StringTable", "Level difficulty").GetLocalizedString() + ": " + level["Difficulty"].ToString();
         _levelDescription.text = level["Description"].ToString();
 
         Text[] allObjects = _parentTransform.gameObject.GetComponentsInChildren<Text>(true);

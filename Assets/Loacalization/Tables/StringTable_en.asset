@@ -170,6 +170,26 @@ MonoBehaviour:
     m_Localized: The Passwords must match!
     m_Metadata:
       m_Items: []
+  - m_Id: 1048191101034496
+    m_Localized: Level difficulty
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1061583798919168
+    m_Localized: Successfully logged in
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1062145969872896
+    m_Localized: Successfully registered!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1062845424590848
+    m_Localized: This username is already in use
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1063121665646592
+    m_Localized: 'Logged as: '
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

@@ -3,6 +3,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.Localization;
 using UnityEngine.Localization.Settings;
+using UnityEngine.UI;
 
 public class LocaleSelector : MonoBehaviour
 {
@@ -11,13 +12,13 @@ public class LocaleSelector : MonoBehaviour
     TMP_Dropdown localeDropDown;
     
 
-    private void Awake() {
+    void Awake() 
+    {
         if(PlayerPrefs.HasKey("Language")) 
             StartCoroutine(SetLocale(PlayerPrefs.GetInt("Language")));
         else 
             StartCoroutine(SetLocale(0));
     }
-
     public void ChangeLocale(int localeID)
     {
         if (_active)

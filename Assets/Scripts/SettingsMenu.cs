@@ -42,7 +42,7 @@ public class SettingsMenu : MonoBehaviour
         
         if(login != String.Empty) {
             usernameMenu.text = login;
-            loggedAsText.text = "Logged as " + login;
+            loggedAsText.text = new LocalizedString("StringTable", "Logged as").GetLocalizedString() + login;
             LoggedMenu(false);
         }
 
@@ -138,6 +138,11 @@ public class SettingsMenu : MonoBehaviour
             vfxVolume = 1;
     }
 
+    public void LocaleLogin() 
+    {
+        loggedAsText.text = new LocalizedString("StringTable", "Logged as").GetLocalizedString() + login;
+    }
+
     public void LogIn()
     {
         logError.color = Color.red;
@@ -163,8 +168,8 @@ public class SettingsMenu : MonoBehaviour
             login = logUsername.text;
             LoggedMenu(false);
             logError.color = Color.green;
-            loggedAsText.text = "Logged as " + login;
-            logError.text = "Successfully logged in!";
+            loggedAsText.text = new LocalizedString("StringTable", "Logged as").GetLocalizedString() + login;
+            logError.text = new LocalizedString("StringTable", "Logged in").GetLocalizedString();
             PlayerPrefs.SetString("Player", logUsername.text);
             Debug.Log(PlayerPrefs.GetString("Player"));
         }
@@ -213,12 +218,12 @@ public class SettingsMenu : MonoBehaviour
 
         if (answer != null)
         {
-            signError.text = "This username is already in use!";
+            signError.text = new LocalizedString("StringTable", "Username in use").GetLocalizedString(); 
         }
         else
         {
             signError.color = Color.green;
-            signError.text = "Successfully registered!";
+            signError.text = new LocalizedString("StringTable", "Registered").GetLocalizedString();
             AppDataBase.ExecuteQueryWithoutAnswer($"INSERT INTO Users (Username, Password) VALUES ('{username.text}', '{password.text}')");
         }
     }
