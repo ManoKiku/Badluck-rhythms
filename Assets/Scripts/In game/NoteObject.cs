@@ -21,6 +21,9 @@ public class NoteObject : MonoBehaviour
     }
 
     private void Update() {
+        if(GameManager.instance._bs.isEnded)
+            return;
+
         if(Input.GetKeyDown(_keyPress)) {
             if(_canBePressed && _isFirstTime) {
                 _obtained = true;

@@ -3,26 +3,27 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using UnityEngine.Localization;
+using UnityEditor;
+using Unity.VisualScripting;
+using UnityEngine.Rendering;
+using System.Collections;
+using System.Net.NetworkInformation;
 
 public class GameManager : MonoBehaviour
 {
     [Header("Important objects")]
     [SerializeField]
-    private AudioSource _music;    
-    [SerializeField]
-    private AudioSource _vfx;
+    private AudioSource _music, _vfx;    
     [SerializeField]
     private AudioClip _hit, _miss;
     [SerializeField]
-    private GameObject _loseMenu;
+    private GameObject _loseMenu, _pauseMenu, _fadePanel, _anyKey;
     [SerializeField]
-    private BeatScroller _bs;
+    public BeatScroller _bs;
     [SerializeField]
     private Slider _hpSlider;
     [SerializeField]
-    private Text _lvlPercent;
-    [SerializeField]
-    private GameObject _fadePanel;
+    private Text _lvlPercent, _pauseTimer;
     [SerializeField]
     private bool _startPlaying;
     [SerializeField]
@@ -55,6 +56,8 @@ public class GameManager : MonoBehaviour
     public int comboCount = 0;
     [SerializeField]
     private float _modsMul = 1.0f;
+    [SerializeField]
+    private bool godMod = false;
 
     [Space(30)]
     [Header("Texts")]
@@ -78,8 +81,12 @@ public class GameManager : MonoBehaviour
     public static GameManager instance;
     public static KeyCode[] basicButtons = {KeyCode.S, KeyCode.D, KeyCode.F, KeyCode.J, KeyCode.K, KeyCode.L};
 
+    public static float waitTimer = 0.5f;
+
     void Awake()
     {
+        waitTimer = 1;
+
         locale[0] = new LocalizedString("StringTable", "Perfect").GetLocalizedString();
         locale[1] = new LocalizedString("StringTable", "Good").GetLocalizedString();
         locale[2] = new LocalizedString("StringTable", "Normal").GetLocalizedString();
@@ -109,11 +116,16 @@ public class GameManager : MonoBehaviour
 
     // Update is called once per frame
     void Update() {
+        if(waitTimer > 0) {
+            waitTimer -= Time.deltaTime;
+            return;
+        }
+
         if(!_startPlaying) {
            if(Input.anyKeyDown) {
                 _startPlaying = true;
                 _bs.isStarted = true;
-
+                _anyKey.SetActive(false);
                 _music.Play();
             }
         }
@@ -123,12 +135,66 @@ public class GameManager : MonoBehaviour
             _hpSlider.value = _hp;
             _lvlPercent.text = System.Convert.ToString(Mathf.Round(BeatScroller.timer / (_bs.lastNote + 3f) * 100)) + "%";
             if(Input.GetKeyDown(KeyCode.Escape)) {
-                LoadSceneByName("MainMenu");
+                PausedMenu();
             }
             if(Input.GetKeyDown(KeyCode.R)) {
+                StartCoroutine(SoundFade(_music, 0.45f));
+                StartCoroutine(SoundFade(_vfx, 0.45f));
+                _bs.isEnded = true;
                 LoadSceneByName("Game");
             }
         }
+    }
+
+    public static IEnumerator SoundFade(AudioSource sr, float time) {
+        float timer = 0;
+        while(timer <= time) {
+            timer += Time.deltaTime;
+            sr.volume = time / timer;
+            yield return null;
+        }
+        sr.Stop();
+    }
+    
+    IEnumerator UnpauseWait(int amount) {
+        float timer = 0;
+        _pauseTimer.text = amount.ToString();
+        _pauseTimer.gameObject.SetActive(true);
+
+        for(int i = 1; i <= amount; ++i ) {
+            timer = 0;
+
+            while(timer <= 0.3f) {
+                timer += Time.deltaTime;
+                _pauseTimer.fontSize = (int)(144 * timer / 0.3f);
+                yield return null;
+            }
+            yield return new WaitForSeconds(0.4f);
+            
+            while(timer <= 0.6f) {
+                timer += Time.deltaTime;
+                _pauseTimer.fontSize = (int)(144 * (1 - ((timer - 0.3f) / 0.3f)));
+                
+            }
+            _pauseTimer.text = (amount - i).ToString();
+        }
+
+        _pauseTimer.gameObject.SetActive(false);
+        _bs.isEnded = false;
+        _vfx.Play();
+        _music.Play();
+    }
+
+    public void PausedMenu() {
+        _pauseMenu.SetActive(true);
+        _bs.isEnded = true;
+        _vfx.Pause();
+        _music.Pause();
+    }
+
+    public void UnPausedMenu() {
+        _pauseMenu.SetActive(false);
+        StartCoroutine(UnpauseWait(3));
     }
 
     public void NoteHit() {
@@ -175,6 +241,9 @@ public class GameManager : MonoBehaviour
     }
 
     public void NoteMissed() {
+        if(godMod)
+            return;
+            
         Debug.Log("Missed!");
         hitText.color = Color.red;
         hitText.text = locale[3];
@@ -184,6 +253,7 @@ public class GameManager : MonoBehaviour
 
         comboCount = 0;
         ++_missCount;
+
         AddHp(-.1f);
 
         if(_hp <= 0) {
@@ -260,4 +330,5 @@ public class GameManager : MonoBehaviour
         if(_hp > 1) 
             _hp = 1;
     }
+
 }

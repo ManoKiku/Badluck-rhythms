@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -42,6 +43,8 @@ public class BeatScroller : MonoBehaviour
         }
         lastNote = _hitTime[_hitTime.Count - 1];
         Debug.Log("Current note count: " + _hitTime.Count);
+        Debug.Log(Math.Pow(_hitTime[_hitTime.Count - 1] / 60, 0.2f));
+        Debug.Log(Math.Round((Math.Pow(_speedMultipler, 0.6) * Math.Sqrt(_beatTempo * 60)  * _hitTime.Count / _hitTime[_hitTime.Count - 1] / 30), 2));
     }
 
     void Update() {

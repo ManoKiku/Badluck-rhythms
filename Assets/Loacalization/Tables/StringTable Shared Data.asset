@@ -187,6 +187,22 @@ MonoBehaviour:
     m_Key: Logged as
     m_Metadata:
       m_Items: []
+  - m_Id: 1860416829120512
+    m_Key: Paused
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1860439272841216
+    m_Key: Continue
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1860470868533248
+    m_Key: Restart
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1880148076650496
+    m_Key: Any key
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

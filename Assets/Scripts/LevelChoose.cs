@@ -17,6 +17,8 @@ public class LevelChoose : MonoBehaviour
     [SerializeField]
     private Transform _parentTransform, _levelsTransform;
 
+    bool isOdd = false;
+
     void Awake() {
         StartCoroutine(FadeOut(_fadePanel));
 
@@ -28,6 +30,12 @@ public class LevelChoose : MonoBehaviour
                 Button inst = Instantiate(_buttonPrefab, _levelsTransform);
                 inst.GetComponentInChildren<Text>().text = buff;
                 inst.onClick.AddListener(delegate { ChooseLevel(System.Convert.ToInt32(rows["id"])); });
+
+                if(isOdd) {
+                    inst.GetComponent<Image>().color = new Color(1, 1, 1);
+                    inst.GetComponentInChildren<Text>().color = new Color(0.6313726f, 0.5568628f, 0.8666667f);
+                }
+                isOdd = !isOdd;
             }
         }
 

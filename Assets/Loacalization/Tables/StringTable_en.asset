@@ -190,6 +190,22 @@ MonoBehaviour:
     m_Localized: 'Logged as: '
     m_Metadata:
       m_Items: []
+  - m_Id: 1860416829120512
+    m_Localized: Paused
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1860439272841216
+    m_Localized: Continue
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1860470868533248
+    m_Localized: Restart
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1880148076650496
+    m_Localized: Press any key to start
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

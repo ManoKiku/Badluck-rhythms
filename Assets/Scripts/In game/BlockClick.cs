@@ -16,11 +16,13 @@ public class BlockClick : MonoBehaviour
     }
 
     void Update() {
-        if(Input.GetKeyDown(_pressKey)) {
+        if(GameManager.waitTimer > 0 || GameManager.instance._bs.isEnded)
+            return;
+
+        if(Input.GetKeyDown(_pressKey)) 
             _sp.sprite = _pressedImage;
-        }
-        else if(Input.GetKeyUp(_pressKey)) {
+        else if(Input.GetKeyUp(_pressKey)) 
             _sp.sprite = _deffaultImage;
-        }
+        
     }
 }
