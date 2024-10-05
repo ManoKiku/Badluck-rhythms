@@ -8,6 +8,7 @@ TagManager:
   - Deleter
   - score
   - fade
+  - block
   layers:
   - Default
   - TransparentFX

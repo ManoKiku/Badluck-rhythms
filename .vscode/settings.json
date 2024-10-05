@@ -56,5 +56,5 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "Badluck-rhythms.sln"
+    "dotnet.defaultSolution": "Rhythm-game.sln"
 }

@@ -10,7 +10,7 @@ public class NoteObject : MonoBehaviour
     public KeyCode _keyPress;
 
     [SerializeField]
-    private bool _canBePressed = false, _obtained = false, _isFirstTime = true, _isFading = false;
+    private bool _canBePressed = false, _obtained = false, _isFading = false;
     [SerializeField]
     public static float pianoPos = -3.5f;
     [SerializeField]
@@ -25,7 +25,7 @@ public class NoteObject : MonoBehaviour
             return;
 
         if(Input.GetKeyDown(_keyPress)) {
-            if(_canBePressed && _isFirstTime) {
+            if(_canBePressed) {
                 _obtained = true;
                 GameObject buff = Instantiate(explosionParticle, transform.position, Quaternion.identity);
                 Destroy(buff, 1f);
@@ -40,12 +40,6 @@ public class NoteObject : MonoBehaviour
                     GameManager.instance.PerfectHit();
                 }
             }
-            else {
-                if(transform.position.y - pianoPos > .35f && transform.position.y - pianoPos < 1 && _isFirstTime) {
-                    GameManager.instance.NoteMissed();
-                    _isFirstTime = false;
-                }
-            }
         }
         if(BeatScroller.timer >= hitTime - 0.6f && !_isFading) {
             _isFading = true;
@@ -57,6 +51,7 @@ public class NoteObject : MonoBehaviour
     {
         for (float i = 0.5f; i >= 0; i -= Time.deltaTime)
         {
+            while(GameManager.instance._bs.isEnded);
             // set color with i as alpha
             GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, i * 2);
             yield return null;
@@ -66,15 +61,19 @@ public class NoteObject : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D other) {
         if (other.tag == "piano") {
             _canBePressed = true;
+            other.gameObject.GetComponent<BlockClick>().isBlock = true;
         }
+        
+
     }
 
       private void OnTriggerExit2D(Collider2D other) {
         if (other.tag == "piano") {
             _canBePressed = false;
-            if(!_obtained && _isFirstTime) 
+            if(!_obtained) 
                 GameManager.instance.NoteMissed();
 
+            other.gameObject.GetComponent<BlockClick>().isBlock = false;
             Destroy(gameObject, 3f);
         }
     }

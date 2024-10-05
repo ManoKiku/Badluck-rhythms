@@ -101,7 +101,6 @@ public class GameManager : MonoBehaviour
         if(PlayerPrefs.HasKey("vfxPreference"))
             _vfx.volume = PlayerPrefs.GetFloat("vfxPreference");
 
-        Debug.Log(Application.streamingAssetsPath + PlayerPrefs.GetInt("Level"));
         instance = this;
 
         LoadDataFromFile();
@@ -254,14 +253,7 @@ public class GameManager : MonoBehaviour
         comboCount = 0;
         ++_missCount;
 
-        AddHp(-.1f);
-
-        if(_hp <= 0) {
-            _hp = 0;
-            _bs.isEnded = true;
-            _music.Pause();
-            _loseMenu.SetActive(true);
-        }
+        AddHp(-.07f);
 
         ScoreTextChange();
     }
@@ -313,7 +305,6 @@ public class GameManager : MonoBehaviour
 
         var json = File.ReadAllText(GetMusicPath()  + ".bytes");
         JsonUtility.FromJsonOverwrite(json, _bs);
-        Debug.Log(json);
     }
 
     public void LoadSceneByName(string sceneName) {
@@ -329,6 +320,12 @@ public class GameManager : MonoBehaviour
         _hp += num;
         if(_hp > 1) 
             _hp = 1;
+        else if(_hp <= 0) {
+            _hp = 0;
+            _bs.isEnded = true;
+            _music.Pause();
+            _loseMenu.SetActive(true);
+        }
     }
 
 }

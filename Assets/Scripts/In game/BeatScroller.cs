@@ -8,8 +8,6 @@ public class BeatScroller : MonoBehaviour
 
 
     [SerializeField]
-    private float _beatTempo;
-    [SerializeField]
     private float _speedMultipler = 1f;
 
     [SerializeField]
@@ -29,14 +27,13 @@ public class BeatScroller : MonoBehaviour
 
     void Start() {
         timer = 0;
-        _beatTempo /= 60f;
         isSpeed = PlayerPrefs.GetInt("Speed") != 0;
         if(isSpeed)
             _speedMultipler *= 1.5f;
         for(int i = 0; i < _hitTime.Count; ++i) {
             if(isSpeed) 
                 _hitTime[i] /= 1.5f;
-            NoteObject buff = Instantiate(note, new Vector3(-2.5f + (int)_column[i], NoteObject.pianoPos + _beatTempo * _speedMultipler * _hitTime[i], 0), Quaternion.identity);
+            NoteObject buff = Instantiate(note, new Vector3(-2.5f + (int)_column[i], NoteObject.pianoPos + _speedMultipler * _hitTime[i], 0), Quaternion.identity);
             buff._keyPress = GameManager.basicButtons[(int)_column[i]];
             buff.transform.SetParent(this.transform);
             buff.hitTime = _hitTime[i];
@@ -44,13 +41,14 @@ public class BeatScroller : MonoBehaviour
         lastNote = _hitTime[_hitTime.Count - 1];
         Debug.Log("Current note count: " + _hitTime.Count);
         Debug.Log(Math.Pow(_hitTime[_hitTime.Count - 1] / 60, 0.2f));
-        Debug.Log(Math.Round((Math.Pow(_speedMultipler, 0.6) * Math.Sqrt(_beatTempo * 60)  * _hitTime.Count / _hitTime[_hitTime.Count - 1] / 30), 2));
+        Debug.Log(Math.Round((Math.Pow(_speedMultipler, 0.6f) * _hitTime.Count * Math.Pow(_hitTime[_hitTime.Count - 1] / 60, 0.4f) / _hitTime[_hitTime.Count - 1] / 5), 2));
     }
+
 
     void Update() {
         if(isStarted && !isEnded) {
             timer += Time.deltaTime;
-            transform.position -= new Vector3(0f, _beatTempo * _speedMultipler * Time.deltaTime , 0f);
+            transform.position -= new Vector3(0f, _speedMultipler * Time.deltaTime , 0f);
             if(lastNote <= timer - 3f) {
                 isEnded = true;
                 GameManager.instance.ShowResult();

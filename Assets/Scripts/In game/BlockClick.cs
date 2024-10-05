@@ -9,6 +9,8 @@ public class BlockClick : MonoBehaviour
 
     [SerializeField]
     private KeyCode _pressKey;
+    [SerializeField]
+    public bool isBlock = false;
 
     void Start() {
         _sp = GetComponent<SpriteRenderer>();
@@ -19,8 +21,11 @@ public class BlockClick : MonoBehaviour
         if(GameManager.waitTimer > 0 || GameManager.instance._bs.isEnded)
             return;
 
-        if(Input.GetKeyDown(_pressKey)) 
+        if(Input.GetKeyDown(_pressKey)) {
             _sp.sprite = _pressedImage;
+            if(!isBlock)
+                GameManager.instance.AddHp(-0.03f);
+        }
         else if(Input.GetKeyUp(_pressKey)) 
             _sp.sprite = _deffaultImage;
         
