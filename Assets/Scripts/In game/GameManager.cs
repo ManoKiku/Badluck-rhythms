@@ -85,6 +85,8 @@ public class GameManager : MonoBehaviour
 
     void Awake()
     {
+        MainMenu.fadePanel = _fadePanel;
+
         waitTimer = 1;
 
         locale[0] = new LocalizedString("StringTable", "Perfect").GetLocalizedString();
@@ -94,7 +96,8 @@ public class GameManager : MonoBehaviour
 
         if(PlayerPrefs.GetString("Player") == string.Empty)
             uploadRecord.SetActive(false);
-        StartCoroutine(LevelChoose.FadeOut(_fadePanel));
+
+        StartCoroutine(MainMenu.FadeOut(0.5f));
 
         if(PlayerPrefs.HasKey("MusicPreference"))
             _music.volume = PlayerPrefs.GetFloat("MusicPreference");
@@ -308,8 +311,8 @@ public class GameManager : MonoBehaviour
     }
 
     public void LoadSceneByName(string sceneName) {
-        StartCoroutine(LevelChoose.FadeIn(_fadePanel));
-        StartCoroutine(LevelChoose.SceneLoadDelay(sceneName, 0.5f));
+        StartCoroutine(MainMenu.FadeIn(0.5f));
+        StartCoroutine(MainMenu.SceneLoadDelay(sceneName, 0.5f));
     }
 
     public void UploadResult() {
@@ -317,12 +320,17 @@ public class GameManager : MonoBehaviour
     }
 
     public void AddHp(float num) {
+        if(godMod)
+            return;
+
         _hp += num;
+
         if(_hp > 1) 
             _hp = 1;
         else if(_hp <= 0) {
             _hp = 0;
             _bs.isEnded = true;
+            
             _music.Pause();
             _loseMenu.SetActive(true);
         }
