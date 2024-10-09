@@ -30,10 +30,10 @@ public class NoteObject : MonoBehaviour
                 GameObject buff = Instantiate(explosionParticle, transform.position, Quaternion.identity);
                 Destroy(buff, 1f);
                 Destroy(gameObject);
-                if(Math.Abs(transform.position.y - pianoPos) > .35f) {
+                if(Math.Abs(transform.position.y - pianoPos) > .4f) {
                     GameManager.instance.NormalHit();
                 }
-                else if(Math.Abs(transform.position.y - pianoPos) > .2f) {
+                else if(Math.Abs(transform.position.y - pianoPos) > .25f) {
                     GameManager.instance.GoodHit();
                 }
                 else {

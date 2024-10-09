@@ -1,7 +1,7 @@
 using System.IO;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.SceneManagement;
+
 using UnityEngine.Localization;
 using UnityEditor;
 using Unity.VisualScripting;
@@ -55,6 +55,8 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     public int comboCount = 0;
     [SerializeField]
+    float _accuracy;
+    [SerializeField]
     private float _modsMul = 1.0f;
     [SerializeField]
     private bool godMod = false;
@@ -73,9 +75,7 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     public GameObject resultObject, uploadRecord;
     [SerializeField]
-    public Text resultScoreText;
-    [SerializeField]
-    public Text resultHitText;
+    public Text resultScoreText, resultHitText, levelRank;
 
     private string[] locale = new string[4];
     public static GameManager instance;
@@ -140,22 +140,10 @@ public class GameManager : MonoBehaviour
                 PausedMenu();
             }
             if(Input.GetKeyDown(KeyCode.R)) {
-                StartCoroutine(SoundFade(_music, 0.45f));
-                StartCoroutine(SoundFade(_vfx, 0.45f));
                 _bs.isEnded = true;
                 LoadSceneByName("Game");
             }
         }
-    }
-
-    public static IEnumerator SoundFade(AudioSource sr, float time) {
-        float timer = 0;
-        while(timer <= time) {
-            timer += Time.deltaTime;
-            sr.volume = time / timer;
-            yield return null;
-        }
-        sr.Stop();
     }
     
     IEnumerator UnpauseWait(int amount) {
@@ -268,12 +256,43 @@ public class GameManager : MonoBehaviour
 
     public void ShowResult() {
         resultObject.gameObject.SetActive(true);
-        resultScoreText.text =  $"{new LocalizedString("StringTable", "Score").GetLocalizedString()}: " + currentScore + 
-        $"\n{new LocalizedString("StringTable", "Max combo").GetLocalizedString()}: "+ maxCombo;
-        resultHitText.text = $"{new LocalizedString("StringTable", "Perfect").GetLocalizedString()}:" + _perfectCount + 
-        $"\n{new LocalizedString("StringTable", "Good").GetLocalizedString()}:" + _goodCount + 
-        $"\n{new LocalizedString("StringTable", "Normal").GetLocalizedString()}:" + _normalCount + 
-        $"\n{new LocalizedString("StringTable", "Miss").GetLocalizedString()}:" + _missCount;
+        _accuracy = (_normalCount / 6f + _goodCount / 2f + _perfectCount) / _bs.noteCount;
+
+        resultScoreText.text =  $"{new LocalizedString("StringTable", "Score").GetLocalizedString()}: {currentScore}" + 
+        $"\n{new LocalizedString("StringTable", "Max combo").GetLocalizedString()}: {maxCombo}" +
+        $"\n{new LocalizedString("StringTable", "Accuracy").GetLocalizedString()}: {Mathf.Round(_accuracy * 100)}%";
+
+        resultHitText.text = $"{new LocalizedString("StringTable", "Perfect").GetLocalizedString()}: {_perfectCount}" + 
+        $"\n{new LocalizedString("StringTable", "Good").GetLocalizedString()}: {_goodCount}" + 
+        $"\n{new LocalizedString("StringTable", "Normal").GetLocalizedString()}: {_normalCount}" + 
+        $"\n{new LocalizedString("StringTable", "Miss").GetLocalizedString()}: {_missCount}";
+
+        if(_accuracy == 1) {
+            levelRank.text = "SS";
+            levelRank.color = new Color(1, 1, 0);
+        }
+        else if(_accuracy > .9f && _missCount == 0) {
+            levelRank.text = "S";
+            levelRank.color = new Color(1, 1, 1);
+        }
+        else if(_accuracy > .85f) {
+            levelRank.text = "A";
+            levelRank.color = new Color(0, 0.851f, 0.114f);
+        }
+        else if(_accuracy > .75f) {
+            levelRank.text = "B";
+            levelRank.color = new Color(0, 0.263f, 0.729f);
+        }
+        else if(_accuracy > .6f) {
+            levelRank.text = "C";
+            levelRank.color = new Color(0.6437531f, 0, 1);
+        }
+        else {
+            levelRank.text = "D";
+            levelRank.color = new Color(1, 0, 0);
+        }
+
+        AppDataBase.ExecuteQueryWithoutAnswer($"INSERT INTO Records VALUES ({PlayerPrefs.GetInt("Level")}, '{PlayerPrefs.GetString("Player")}', {currentScore}, {_perfectCount}, {_goodCount}, {_normalCount}, {_missCount}, '{levelRank.text}')");
     }
 
     private string GetMusicPath()
@@ -313,10 +332,6 @@ public class GameManager : MonoBehaviour
     public void LoadSceneByName(string sceneName) {
         StartCoroutine(MainMenu.FadeIn(0.5f));
         StartCoroutine(MainMenu.SceneLoadDelay(sceneName, 0.5f));
-    }
-
-    public void UploadResult() {
-        AppDataBase.ExecuteQueryWithoutAnswer($"INSERT INTO Records VALUES ({PlayerPrefs.GetInt("Level")}, '{PlayerPrefs.GetString("Player")}', {currentScore}, {_perfectCount}, {_goodCount}, {_normalCount}, {_missCount})");
     }
 
     public void AddHp(float num) {

@@ -18,6 +18,8 @@ public class BeatScroller : MonoBehaviour
     private List<notesSelect> _column;
 
     [SerializeField]
+    public int noteCount;
+    [SerializeField]
     public bool isStarted = false, isEnded = false, isSpeed = false;
 
     [SerializeField]
@@ -28,9 +30,12 @@ public class BeatScroller : MonoBehaviour
     void Start() {
         timer = 0;
         isSpeed = PlayerPrefs.GetInt("Speed") != 0;
+        noteCount = _hitTime.Count;
+
         if(isSpeed)
             _speedMultipler *= 1.5f;
-        for(int i = 0; i < _hitTime.Count; ++i) {
+
+        for(int i = 0; i < noteCount; ++i) {
             if(isSpeed) 
                 _hitTime[i] /= 1.5f;
             NoteObject buff = Instantiate(note, new Vector3(-2.5f + (int)_column[i], NoteObject.pianoPos + _speedMultipler * _hitTime[i], 0), Quaternion.identity);
@@ -38,10 +43,10 @@ public class BeatScroller : MonoBehaviour
             buff.transform.SetParent(this.transform);
             buff.hitTime = _hitTime[i];
         }
-        lastNote = _hitTime[_hitTime.Count - 1];
-        Debug.Log("Current note count: " + _hitTime.Count);
-        Debug.Log(Math.Pow(_hitTime[_hitTime.Count - 1] / 60, 0.2f));
-        Debug.Log(Math.Round((Math.Pow(_speedMultipler, 0.6f) * _hitTime.Count * Math.Pow(_hitTime[_hitTime.Count - 1] / 60, 0.4f) / _hitTime[_hitTime.Count - 1] / 5), 2));
+        lastNote = _hitTime[noteCount - 1];
+        Debug.Log("Current note count: " + noteCount);
+        Debug.Log(Math.Pow(_hitTime[noteCount - 1] / 60, 0.2f));
+        Debug.Log(Math.Round((Math.Pow(_speedMultipler, 0.6f) * noteCount * Math.Pow(_hitTime[noteCount - 1] / 60, 0.4f) / _hitTime[noteCount - 1] / 5), 2));
     }
 
 
