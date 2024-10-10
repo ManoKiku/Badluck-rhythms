@@ -186,8 +186,12 @@ public class GameManager : MonoBehaviour
     }
 
     public void NoteHit() {
-        _vfx.Stop();
-        _vfx.PlayOneShot(_hit);
+
+        if(_vfx != null) {
+            _vfx.Stop();
+            _vfx.PlayOneShot(_hit);
+        }
+
 
         ++comboCount;
         AddHp(.04f);
@@ -235,9 +239,12 @@ public class GameManager : MonoBehaviour
         Debug.Log("Missed!");
         hitText.color = Color.red;
         hitText.text = locale[3];
-
+        
+        if(_vfx != null) {
         _vfx.Stop();
         _vfx.PlayOneShot(_miss);
+        }
+
 
         comboCount = 0;
         ++_missCount;
@@ -274,8 +281,13 @@ public class GameManager : MonoBehaviour
         if(!PlayerPrefs.HasKey("Player") || PlayerPrefs.GetString("Player") == String.Empty)
             return;
 
-        if(AppDataBase.ExecuteQueryWithAnswer($"SELECT * FROM Records WHERE Username = '{PlayerPrefs.GetString("Player")}' AND id = {PlayerPrefs.GetInt("Level")}") != null)
-            AppDataBase.ExecuteQueryWithoutAnswer($"UPDATE Records SET Score = {currentScore}, Perfect = {_perfectCount}, Good = {_goodCount}, Okay = {_normalCount}, Miss = {_missCount}, Rank ='{levelRank.text}' WHERE id = {PlayerPrefs.GetInt("Level")} AND Username = '{PlayerPrefs.GetString("Player")}'");
+        string recordScore = AppDataBase.ExecuteQueryWithAnswer($"SELECT Score FROM Records WHERE Username = '{PlayerPrefs.GetString("Player")}' AND id = {PlayerPrefs.GetInt("Level")}");
+        Debug.Log(recordScore);
+
+        if(recordScore != null) {
+            if(System.Convert.ToUInt32(recordScore) <= currentScore)
+                AppDataBase.ExecuteQueryWithoutAnswer($"UPDATE Records SET Score = {currentScore}, Perfect = {_perfectCount}, Good = {_goodCount}, Okay = {_normalCount}, Miss = {_missCount}, Rank ='{levelRank.text}' WHERE id = {PlayerPrefs.GetInt("Level")} AND Username = '{PlayerPrefs.GetString("Player")}'");
+        }
         else
             AppDataBase.ExecuteQueryWithoutAnswer($"INSERT INTO Records VALUES ({PlayerPrefs.GetInt("Level")}, '{PlayerPrefs.GetString("Player")}', {currentScore}, {_perfectCount}, {_goodCount}, {_normalCount}, {_missCount}, '{levelRank.text}')");
     }
