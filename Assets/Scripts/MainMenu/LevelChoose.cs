@@ -10,9 +10,11 @@ using UnityEngine.UI;
 public class LevelChoose : MonoBehaviour
 {
     [SerializeField]
+    GameObject _record;
+    [SerializeField]
     Button _buttonPrefab;
     [SerializeField]
-    private Text _levelName, _levelDifficulty, _levelDescription, _record;
+    private Text _levelName, _levelDifficulty, _levelDescription;
     [SerializeField]
     private Transform _parentTransform, _levelsTransform;
 
@@ -40,27 +42,7 @@ public class LevelChoose : MonoBehaviour
                     string rank = AppDataBase.ExecuteQueryWithAnswer($"SELECT Rank FROM Records WHERE Username = '{PlayerPrefs.GetString("Player")}' AND id = {System.Convert.ToInt32(rows["id"])} ORDER BY Score DESC LIMIT 1");
                     Text rankText = inst.GetComponentsInChildren<Text>()[0];
 
-                    switch(rank) {
-                        case "D":
-                        rankText.color = new Color(1, 0, 0);
-                        break;
-                        case "C":
-                        rankText.color = new Color(0.6437531f, 0, 1);
-                        break;
-                        case "B":
-                        rankText.color = new Color(0, 0.263f, 0.729f);;
-                        break;
-                        case "A":
-                        rankText.color = new Color(0, 0.851f, 0.114f);
-                        break;
-                        case "S":
-                        rankText.color = new Color(1, 1, 1);
-                        break;
-                        case "SS":
-                        rankText.color = new Color(1, 1, 0);
-                        break;
-                    }
-
+                    rankText.color = GetRankColor(rank);
                     rankText.text = rank;
 
                     if(isOdd) {
@@ -88,18 +70,48 @@ public class LevelChoose : MonoBehaviour
         _levelDifficulty.text = new LocalizedString("StringTable", "Level difficulty").GetLocalizedString() + ": " + level["Difficulty"].ToString();
         _levelDescription.text = level["Description"].ToString();
 
-        Text[] allObjects = _parentTransform.gameObject.GetComponentsInChildren<Text>(true);
-        foreach(Text obj in allObjects) 
+        Mask[] allObjects = _parentTransform.gameObject.GetComponentsInChildren<Mask>(true);
+        foreach(Mask obj in allObjects) 
             Destroy(obj.gameObject);
         
-        DataTable records = AppDataBase.GetTable($"SELECT Username, Score, Perfect, Good, Okay, Miss FROM Records WHERE id = {id} ORDER BY Score DESC");
+        DataTable records = AppDataBase.GetTable($"SELECT Username, Score, Perfect, Good, Okay, Miss, Rank FROM Records WHERE id = {id} ORDER BY Score DESC");
 
+        Text[] recordUnit = new Text[8];
+
+
+        int count = 0;
         foreach(DataRow rows in records.Rows) {
-            foreach(DataColumn col in records.Columns) {
-                Text buff = Instantiate(_record, _parentTransform);
-                buff.text += rows[col];
-            }
+            count++;
+            GameObject buff = Instantiate(_record, _parentTransform);
+            recordUnit = buff.GetComponentsInChildren<Text>();
+            recordUnit[0].text =  $"#{count}";
+            recordUnit[1].text = rows["Rank"].ToString();
+            recordUnit[1].color = GetRankColor(recordUnit[1].text);
+            recordUnit[2].text = rows["Username"].ToString();
+            recordUnit[3].text = rows["Score"].ToString();
+            recordUnit[4].text = rows["Perfect"].ToString();
+            recordUnit[5].text = rows["Good"].ToString();
+            recordUnit[6].text = rows["Okay"].ToString();
+            recordUnit[7].text = rows["Miss"].ToString();
         }
+    }
+
+    public static Color GetRankColor(string rank) {
+        switch(rank) {
+        case "D":
+        return new Color(1, 0, 0);
+        case "C":
+         return new Color(0.6437531f, 0, 1);
+        case "B":
+         return new Color(0, 0.263f, 0.729f);;
+        case "A":
+         return new Color(0, 0.851f, 0.114f);
+        case "S":
+         return new Color(0.5660378f, 0.5660378f, 0.5660378f);
+        case "SS":
+         return new Color(1, 1, 0);
+        }
+        return new Color(0, 0, 0, 0);
     }
 
     public void PlayLevel() {

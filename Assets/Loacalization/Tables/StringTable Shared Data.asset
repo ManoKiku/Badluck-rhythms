@@ -207,6 +207,10 @@ MonoBehaviour:
     m_Key: Accuracy
     m_Metadata:
       m_Items: []
+  - m_Id: 4166278545399808
+    m_Key: Fade
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

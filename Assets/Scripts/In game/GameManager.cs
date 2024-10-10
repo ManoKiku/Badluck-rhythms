@@ -8,6 +8,7 @@ using Unity.VisualScripting;
 using UnityEngine.Rendering;
 using System.Collections;
 using System.Net.NetworkInformation;
+using System;
 
 public class GameManager : MonoBehaviour
 {
@@ -73,7 +74,7 @@ public class GameManager : MonoBehaviour
     [Space(30)]
     [Header("Result menu")]
     [SerializeField]
-    public GameObject resultObject, uploadRecord;
+    public GameObject resultObject;
     [SerializeField]
     public Text resultScoreText, resultHitText, levelRank;
 
@@ -93,9 +94,6 @@ public class GameManager : MonoBehaviour
         locale[1] = new LocalizedString("StringTable", "Good").GetLocalizedString();
         locale[2] = new LocalizedString("StringTable", "Normal").GetLocalizedString();
         locale[3] = new LocalizedString("StringTable", "Miss").GetLocalizedString();
-
-        if(PlayerPrefs.GetString("Player") == string.Empty)
-            uploadRecord.SetActive(false);
 
         StartCoroutine(MainMenu.FadeOut(0.5f));
 
@@ -267,32 +265,19 @@ public class GameManager : MonoBehaviour
         $"\n{new LocalizedString("StringTable", "Normal").GetLocalizedString()}: {_normalCount}" + 
         $"\n{new LocalizedString("StringTable", "Miss").GetLocalizedString()}: {_missCount}";
 
-        if(_accuracy == 1) {
-            levelRank.text = "SS";
-            levelRank.color = new Color(1, 1, 0);
-        }
-        else if(_accuracy > .9f && _missCount == 0) {
-            levelRank.text = "S";
-            levelRank.color = new Color(1, 1, 1);
-        }
-        else if(_accuracy > .85f) {
-            levelRank.text = "A";
-            levelRank.color = new Color(0, 0.851f, 0.114f);
-        }
-        else if(_accuracy > .75f) {
-            levelRank.text = "B";
-            levelRank.color = new Color(0, 0.263f, 0.729f);
-        }
-        else if(_accuracy > .6f) {
-            levelRank.text = "C";
-            levelRank.color = new Color(0.6437531f, 0, 1);
-        }
-        else {
-            levelRank.text = "D";
-            levelRank.color = new Color(1, 0, 0);
-        }
+        levelRank.text = _accuracy == 1 ? "SS" :
+        (_accuracy > .9f && _missCount == 0 ? "S" :
+        (_accuracy > .85f ? "A" : (_accuracy > .75f ? "B" : (_accuracy > .6f ? "C" : "D"))));
+        
+        levelRank.color = LevelChoose.GetRankColor(levelRank.text);
 
-        AppDataBase.ExecuteQueryWithoutAnswer($"INSERT INTO Records VALUES ({PlayerPrefs.GetInt("Level")}, '{PlayerPrefs.GetString("Player")}', {currentScore}, {_perfectCount}, {_goodCount}, {_normalCount}, {_missCount}, '{levelRank.text}')");
+        if(!PlayerPrefs.HasKey("Player") || PlayerPrefs.GetString("Player") == String.Empty)
+            return;
+
+        if(AppDataBase.ExecuteQueryWithAnswer($"SELECT * FROM Records WHERE Username = '{PlayerPrefs.GetString("Player")}' AND id = {PlayerPrefs.GetInt("Level")}") != null)
+            AppDataBase.ExecuteQueryWithoutAnswer($"UPDATE Records SET Score = {currentScore}, Perfect = {_perfectCount}, Good = {_goodCount}, Okay = {_normalCount}, Miss = {_missCount}, Rank ='{levelRank.text}' WHERE id = {PlayerPrefs.GetInt("Level")} AND Username = '{PlayerPrefs.GetString("Player")}'");
+        else
+            AppDataBase.ExecuteQueryWithoutAnswer($"INSERT INTO Records VALUES ({PlayerPrefs.GetInt("Level")}, '{PlayerPrefs.GetString("Player")}', {currentScore}, {_perfectCount}, {_goodCount}, {_normalCount}, {_missCount}, '{levelRank.text}')");
     }
 
     private string GetMusicPath()
@@ -350,5 +335,4 @@ public class GameManager : MonoBehaviour
             _loseMenu.SetActive(true);
         }
     }
-
 }

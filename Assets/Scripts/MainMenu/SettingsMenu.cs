@@ -19,10 +19,10 @@ public class SettingsMenu : MonoBehaviour
     [SerializeField]
     private TMP_Dropdown resolutionDropdown;
     [SerializeField]
-    private Slider musicSlider, vfxSlider;
+    private Slider musicSlider, vfxSlider, fadeSlider;
     [SerializeField]
     private Toggle rememberAccount, fullScreen;
-    float musicVolume, vfxVolume;
+    float musicVolume, vfxVolume, fade;
     Resolution[] resolutions;
 
     private static bool isFirstStartUp = true;
@@ -81,6 +81,11 @@ public class SettingsMenu : MonoBehaviour
         return PlayerPrefs.HasKey("Player") && PlayerPrefs.GetString("Player") != String.Empty;
     }
 
+    public void SetFade(float num)
+    {
+        fade = num;
+    }
+
     public void SetVfx(float volume)
     {
         vfxVolume = volume;
@@ -109,6 +114,7 @@ public class SettingsMenu : MonoBehaviour
         PlayerPrefs.SetInt("FullscreenPreference", System.Convert.ToInt32(Screen.fullScreen));
         PlayerPrefs.SetFloat("MusicPreference", musicVolume);
         PlayerPrefs.SetFloat("vfxPreference", vfxVolume);
+        PlayerPrefs.SetFloat("Fade", fade);
         Debug.Log(PlayerPrefs.GetFloat("MusicPreference"));
         Debug.Log("Saved!");
     }
@@ -136,6 +142,12 @@ public class SettingsMenu : MonoBehaviour
         }
         else
             vfxVolume = 1;
+        if(PlayerPrefs.HasKey("Fade")) {
+            fade = PlayerPrefs.GetFloat("Fade");
+            fadeSlider.value = fade;
+        }
+        else
+            fade = 0.5f;
     }
 
     public void LocaleLogin() 

@@ -210,6 +210,10 @@ MonoBehaviour:
     m_Localized: Accuracy
     m_Metadata:
       m_Items: []
+  - m_Id: 4166278545399808
+    m_Localized: Fade
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []
