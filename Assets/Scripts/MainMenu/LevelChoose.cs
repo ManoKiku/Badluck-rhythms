@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Data;
 using System.IO;
@@ -18,7 +19,7 @@ public class LevelChoose : MonoBehaviour
     [SerializeField]
     private Transform _parentTransform, _levelsTransform;
 
-    bool isOdd = false;
+    public static int levelId = 1;
 
     void Awake() {
         GetLevels();
@@ -31,6 +32,8 @@ public class LevelChoose : MonoBehaviour
         
         DataTable levels = AppDataBase.GetTable($"SELECT id FROM Levels ORDER BY Difficulty");
 
+        bool isOdd = false;
+
         foreach(DataRow rows in levels.Rows) {
             string buff = AppDataBase.ExecuteQueryWithAnswer($"SELECT Name FROM Levels WHERE id = {rows["id"]}");
             if(buff != null && File.Exists($"{Application.streamingAssetsPath}/levels/{rows["id"]}.bytes")) {
@@ -38,19 +41,19 @@ public class LevelChoose : MonoBehaviour
                 inst.GetComponentsInChildren<Text>()[1].text = buff;
                 inst.onClick.AddListener(delegate { ChooseLevel(System.Convert.ToInt32(rows["id"])); });
 
-                if(PlayerPrefs.GetString("Player") != null && PlayerPrefs.HasKey("Player")) {
-                    string rank = AppDataBase.ExecuteQueryWithAnswer($"SELECT Rank FROM Records WHERE Username = '{PlayerPrefs.GetString("Player")}' AND id = {System.Convert.ToInt32(rows["id"])} ORDER BY Score DESC LIMIT 1");
+                if(Sign.login != String.Empty) {
+                    string rank = AppDataBase.ExecuteQueryWithAnswer($"SELECT Rank FROM Records WHERE Username = '{Sign.login}' AND id = {System.Convert.ToInt32(rows["id"])} ORDER BY Score DESC LIMIT 1");
                     Text rankText = inst.GetComponentsInChildren<Text>()[0];
 
                     rankText.color = GetRankColor(rank);
                     rankText.text = rank;
-
-                    if(isOdd) {
-                        inst.GetComponent<Image>().color = new Color(1, 1, 1);
-                        inst.GetComponentsInChildren<Text>()[1].color = new Color(0.6313726f, 0.5568628f, 0.8666667f);
-                    }
-                    isOdd = !isOdd;
                 }
+
+                if(isOdd) {
+                    inst.GetComponent<Image>().color = new Color(1, 1, 1);
+                    inst.GetComponentsInChildren<Text>()[1].color = new Color(0.6313726f, 0.5568628f, 0.8666667f);
+                }
+                isOdd = !isOdd;
             }
         }
         LoadCurrentLevel();
@@ -65,9 +68,11 @@ public class LevelChoose : MonoBehaviour
 
     public void ChooseLevel(int id) {
         PlayerPrefs.SetInt("Level", id);
+        levelId = id;
+
         DataRow level = AppDataBase.GetTable($"SELECT * FROM LEVELS WHERE id = {id}").Rows[0];
         _levelName.text = level["Name"].ToString();
-        _levelDifficulty.text = new LocalizedString("StringTable", "Level difficulty").GetLocalizedString() + ": " + level["Difficulty"].ToString();
+        _levelDifficulty.text = $"{new LocalizedString("StringTable", "Level difficulty").GetLocalizedString()}: {level["Difficulty"]}";
         _levelDescription.text = level["Description"].ToString();
 
         Mask[] allObjects = _parentTransform.gameObject.GetComponentsInChildren<Mask>(true);

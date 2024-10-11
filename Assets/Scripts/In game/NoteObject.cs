@@ -6,11 +6,9 @@ public class NoteObject : MonoBehaviour
 {
     [SerializeField]
     public GameObject explosionParticle;
-    [SerializeField]
-    public KeyCode _keyPress;
 
     [SerializeField]
-    private bool _canBePressed = false, _obtained = false, _isFading = false;
+    private bool _isFading = false, isClicked = false;
     [SerializeField]
     public static float pianoPos = -3.5f;
     [SerializeField]
@@ -24,27 +22,25 @@ public class NoteObject : MonoBehaviour
         if(GameManager.instance._bs.isEnded)
             return;
 
-        if(Input.GetKeyDown(_keyPress)) {
-            if(_canBePressed) {
-                _obtained = true;
-                GameObject buff = Instantiate(explosionParticle, transform.position, Quaternion.identity);
-                Destroy(buff, 1f);
-                Destroy(gameObject);
-                if(Math.Abs(transform.position.y - pianoPos) > .4f) {
-                    GameManager.instance.NormalHit();
-                }
-                else if(Math.Abs(transform.position.y - pianoPos) > .25f) {
-                    GameManager.instance.GoodHit();
-                }
-                else {
-                    GameManager.instance.PerfectHit();
-                }
-            }
-        }
         if(BeatScroller.timer >= hitTime - 0.6f && !_isFading) {
             _isFading = true;
             StartCoroutine(fadeOut());
         }
+    }
+
+    public void Hit(BlockClick b) {
+        GameObject buff = Instantiate(explosionParticle, transform.position, Quaternion.identity);
+        isClicked = true;
+        if(Math.Abs(transform.position.y - pianoPos) > .4f) 
+            GameManager.instance.NormalHit();
+        else if(Math.Abs(transform.position.y - pianoPos) > .25f) 
+            GameManager.instance.GoodHit();
+        else 
+            GameManager.instance.PerfectHit();
+
+        b.notes.Remove(this);
+        Destroy(buff, 1f);
+        Destroy(gameObject);        
     }
 
     IEnumerator fadeOut() 
@@ -60,20 +56,14 @@ public class NoteObject : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other) {
         if (other.tag == "piano") {
-            _canBePressed = true;
-            other.gameObject.GetComponent<BlockClick>().isBlock = true;
+            other.gameObject.GetComponent<BlockClick>().notes.Add(this);
         }
-        
-
     }
 
       private void OnTriggerExit2D(Collider2D other) {
-        if (other.tag == "piano") {
-            _canBePressed = false;
-            if(!_obtained) 
-                GameManager.instance.NoteMissed();
-
-            other.gameObject.GetComponent<BlockClick>().isBlock = false;
+        if (other.tag == "piano" && !isClicked) {
+            GameManager.instance.NoteMissed();
+            other.gameObject.GetComponent<BlockClick>().notes.Remove(this);
             Destroy(gameObject, 3f);
         }
     }

@@ -20,17 +20,19 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     private GameObject _loseMenu, _pauseMenu, _fadePanel, _anyKey;
     [SerializeField]
+    Image _lvlPercent;
+    [SerializeField]
     public BeatScroller _bs;
     [SerializeField]
     private Slider _hpSlider;
     [SerializeField]
-    private Text _lvlPercent, _pauseTimer;
-    [SerializeField]
-    private bool _startPlaying;
+    private Text _pauseTimer;
     [SerializeField]
     private float _hp = 1f;
+    [SerializeField]
+    private bool _startPlaying;
 
-    [Space(30)]
+    [Space(20)]
     [Header("Hit settings")]
     [SerializeField]
     private int _scorePerHit = 50;
@@ -39,7 +41,7 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     private int _scorePerPerfectHit = 300;
 
-    [Space(30)]
+    [Space(20)]
     [Header("Statistics")]
     [SerializeField]
     public int currentScore = 0;
@@ -62,7 +64,7 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     private bool godMod = false;
 
-    [Space(30)]
+    [Space(20)]
     [Header("Texts")]
     [SerializeField]
     public Text scoreText;
@@ -71,7 +73,7 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     public Text hitText;
 
-    [Space(30)]
+    [Space(20)]
     [Header("Result menu")]
     [SerializeField]
     public GameObject resultObject;
@@ -80,7 +82,6 @@ public class GameManager : MonoBehaviour
 
     private string[] locale = new string[4];
     public static GameManager instance;
-    public static KeyCode[] basicButtons = {KeyCode.S, KeyCode.D, KeyCode.F, KeyCode.J, KeyCode.K, KeyCode.L};
 
     public static float waitTimer = 0.5f;
 
@@ -104,8 +105,11 @@ public class GameManager : MonoBehaviour
 
         instance = this;
 
-        LoadDataFromFile();
-        GetAudioFile();
+        SceneLogic.LoadDataFromFile(_bs);
+        _music.clip = SceneLogic.GetAudioFile();
+
+        godMod = System.Convert.ToBoolean(PlayerPrefs.GetInt("GodMod"));
+
         if(PlayerPrefs.GetInt("Speed") != 0) {
             _music.pitch = 1.5f;
             _modsMul += 0.13f;
@@ -131,9 +135,9 @@ public class GameManager : MonoBehaviour
         }
         else if(!_bs.isEnded) 
         {
-            _hp -= _hp > .4f ? 0.03f * _music.pitch *Time.deltaTime : 0;
+            _hp -= _hp > .4f ? 0.03f * _music.pitch * Time.deltaTime : 0;
             _hpSlider.value = _hp;
-            _lvlPercent.text = System.Convert.ToString(Mathf.Round(BeatScroller.timer / (_bs.lastNote + 3f) * 100)) + "%";
+            _lvlPercent.fillAmount = (BeatScroller.timer / (_bs.lastNote + 3f));
             if(Input.GetKeyDown(KeyCode.Escape)) {
                 PausedMenu();
             }
@@ -186,12 +190,11 @@ public class GameManager : MonoBehaviour
     }
 
     public void NoteHit() {
-
+        
         if(_vfx != null) {
             _vfx.Stop();
             _vfx.PlayOneShot(_hit);
         }
-
 
         ++comboCount;
         AddHp(.04f);
@@ -233,18 +236,15 @@ public class GameManager : MonoBehaviour
     }
 
     public void NoteMissed() {
-        if(godMod)
-            return;
             
         Debug.Log("Missed!");
         hitText.color = Color.red;
         hitText.text = locale[3];
-        
-        if(_vfx != null) {
-        _vfx.Stop();
-        _vfx.PlayOneShot(_miss);
-        }
 
+        if(_vfx != null) {
+            _vfx.Stop();
+            _vfx.PlayOneShot(_miss);
+        }
 
         comboCount = 0;
         ++_missCount;
@@ -278,73 +278,41 @@ public class GameManager : MonoBehaviour
         
         levelRank.color = LevelChoose.GetRankColor(levelRank.text);
 
-        if(!PlayerPrefs.HasKey("Player") || PlayerPrefs.GetString("Player") == String.Empty)
+        if(Sign.login == String.Empty || godMod)
             return;
 
-        string recordScore = AppDataBase.ExecuteQueryWithAnswer($"SELECT Score FROM Records WHERE Username = '{PlayerPrefs.GetString("Player")}' AND id = {PlayerPrefs.GetInt("Level")}");
+        string recordScore = AppDataBase.ExecuteQueryWithAnswer($"SELECT Score FROM Records WHERE Username = '{Sign.login}' AND id = {LevelChoose.levelId}");
         Debug.Log(recordScore);
 
         if(recordScore != null) {
             if(System.Convert.ToUInt32(recordScore) <= currentScore)
-                AppDataBase.ExecuteQueryWithoutAnswer($"UPDATE Records SET Score = {currentScore}, Perfect = {_perfectCount}, Good = {_goodCount}, Okay = {_normalCount}, Miss = {_missCount}, Rank ='{levelRank.text}' WHERE id = {PlayerPrefs.GetInt("Level")} AND Username = '{PlayerPrefs.GetString("Player")}'");
+                AppDataBase.ExecuteQueryWithoutAnswer($"UPDATE Records SET Score = {currentScore}, Perfect = {_perfectCount}, Good = {_goodCount}, Okay = {_normalCount}, Miss = {_missCount}, Rank ='{levelRank.text}' WHERE id = {LevelChoose.levelId} AND Username = '{Sign.login}'");
         }
         else
-            AppDataBase.ExecuteQueryWithoutAnswer($"INSERT INTO Records VALUES ({PlayerPrefs.GetInt("Level")}, '{PlayerPrefs.GetString("Player")}', {currentScore}, {_perfectCount}, {_goodCount}, {_normalCount}, {_missCount}, '{levelRank.text}')");
+            AppDataBase.ExecuteQueryWithoutAnswer($"INSERT INTO Records VALUES ({LevelChoose.levelId}, '{Sign.login}', {currentScore}, {_perfectCount}, {_goodCount}, {_normalCount}, {_missCount}, '{levelRank.text}')");
     }
 
-    private string GetMusicPath()
-    {
-        return Application.streamingAssetsPath + "/levels/"+ PlayerPrefs.GetInt("Level");
-    }
-
-    void GetAudioFile()
-    {
-        WWW w = new WWW(GetMusicPath() + ".mp3");
-        _music.clip = NAudioPlayer.FromMp3Data(w.bytes);
-    }
-
-    public void SaveLevelToFile()
-    {
-        if (!File.Exists(GetMusicPath() + ".bytes"))
-        {
-            File.Create(GetMusicPath() + ".bytes");
-        }
-
-        var json = JsonUtility.ToJson(_bs);
-        File.WriteAllText(GetMusicPath()  + ".bytes", json);
-    }
-
-    public void LoadDataFromFile()
-    {
-        if (!File.Exists(GetMusicPath()  + ".bytes"))
-        {
-            //Debug.LogWarning($"File /"{ filePath}/ " not found!, this);
-            return;
-        }
-
-        var json = File.ReadAllText(GetMusicPath()  + ".bytes");
-        JsonUtility.FromJsonOverwrite(json, _bs);
-    }
-
-    public void LoadSceneByName(string sceneName) {
-        StartCoroutine(MainMenu.FadeIn(0.5f));
-        StartCoroutine(MainMenu.SceneLoadDelay(sceneName, 0.5f));
-    }
 
     public void AddHp(float num) {
-        if(godMod)
-            return;
-
         _hp += num;
 
         if(_hp > 1) 
             _hp = 1;
         else if(_hp <= 0) {
             _hp = 0;
+           if(godMod)
+                return;
+
             _bs.isEnded = true;
-            
-            _music.Pause();
+            if(_music != null)
+                _music.Pause();
+
             _loseMenu.SetActive(true);
         }
+    }
+
+    public void LoadSceneByName(string sceneName) {
+        StartCoroutine(MainMenu.FadeIn(0.5f));
+        StartCoroutine(MainMenu.SceneLoadDelay(sceneName, 0.5f));
     }
 }
